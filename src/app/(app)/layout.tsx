@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { sair } from "@/app/actions";
+import NavLinks from "./NavLinks";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -14,6 +15,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             className="rounded-[10px] object-cover"
           />
           <span className="font-display text-[22px] text-tinta">Sal e Mel</span>
+          <NavLinks />
           <form action={sair} className="ml-auto">
             <button className="font-ui text-sm font-bold text-texto-medio hover:text-cacau-600">
               Sair
