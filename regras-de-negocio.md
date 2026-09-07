@@ -25,23 +25,23 @@ Módulos: **Vendas**, **Produtos e Categorias de Preço**, **Clientes**, **Compr
 A precificação vive na **categoria**, não no produto.
 
 ### Categoria de preço
-- Campos: nome, **tipo de precificação** (`cento` ou `pacote`).
-- Tipo `cento`: tem um **preço por 100 unidades**. O preço de qualquer produto dessa categoria é sempre derivado da categoria.
-- Tipo `pacote`: **não tem preço próprio** — cada produto dessa categoria define seu próprio preço fixo (usado para itens sob encomenda, como kits, que não seguem a lógica de "cento").
+- Campos: nome, **tipo de precificação** (`cento` ou `unidade`), **preço** (sempre definido na própria categoria).
+- Tipo `cento`: o preço é **por 100 unidades**.
+- Tipo `unidade`: o preço é **por unidade única** (usado para itens sob encomenda, como kits, que não seguem a lógica de "cento").
+- O preço é sempre da categoria — nunca do produto. Alterar o preço da categoria muda o preço de todos os produtos vinculados a ela imediatamente, nos dois tipos.
 - Uma categoria **não pode ser removida** se houver produtos vinculados a ela.
 
 ### Produto
 - Campos: nome, categoria de preço (obrigatória).
-- Se a categoria for do tipo `pacote`, o produto também tem um **preço fixo próprio**.
-- Se a categoria for do tipo `cento`, o produto **não tem preço próprio** — herda o preço da categoria. Alterar o preço da categoria muda o preço de todos os produtos vinculados a ela imediatamente.
+- O produto **nunca tem preço próprio** — o preço efetivo vem sempre da categoria vinculada (por cento ou por unidade, conforme o tipo dela).
 - Cada produto acumula um contador de **"vendido no mês"** (em unidades), incrementado toda vez que ele é vendido.
 
 ### Cálculo do valor de um item de venda
 ```
 se categoria.tipo == "cento":
-    valor_item = categoria.preco_cento * (quantidade / 100)
-se categoria.tipo == "pacote":
-    valor_item = produto.preco * quantidade
+    valor_item = categoria.preco * (quantidade / 100)
+se categoria.tipo == "unidade":
+    valor_item = categoria.preco * quantidade
 ```
 - Quantidades usuais: 25, 50 ou 100 unidades (múltiplos de lote), mas o campo aceita qualquer valor numérico.
 
@@ -119,7 +119,7 @@ O protótipo não implementa autenticação nem controle de acesso. Para o app r
 
 ## Observações para a modelagem de dados
 
-- `produtos.preco` só é relevante quando a categoria associada é do tipo `pacote`; para categorias `cento`, o preço efetivo vem sempre de `categorias_preco.preco_cento`.
+- `produtos` não guarda preço próprio: o preço efetivo vem sempre de `categorias_preco.preco`, interpretado como preço por 100 unidades (tipo `cento`) ou preço por unidade (tipo `unidade`).
 - `vendas` e `compras` guardam valores **em reais com 2 casas decimais** (sinal e restante especialmente exigem precisão de centavos).
 - Datas de entrega devem ser guardadas em formato de data real (não texto), para permitir os cálculos de "esta semana", "próxima entrega" e "saldo previsto até o vencimento".
 - Recomenda-se guardar o **dia de vencimento da fatura** como parâmetro configurável por cartão (hoje fixo em 8, mas não deveria ficar hard-coded no código).

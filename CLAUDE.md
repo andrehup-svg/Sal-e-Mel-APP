@@ -43,7 +43,8 @@ com sócia, e controle de estoque.
 
 ## Pontos de atenção (não pule isso)
 - O preço de um produto normalmente **não fica nele** — vem da categoria de preço vinculada
-  (tipo `cento` = preço por 100 unidades; tipo `pacote` = preço fixo no próprio produto).
+  (tipo `cento` = preço por 100 unidades; tipo `unidade` = preço por unidade — ambos definidos na
+  categoria, nunca no produto).
   Ver seção 2 do `regras-de-negocio.md`.
 - Sinal e Restante usam 2 casas decimais (moeda brasileira, R$ 0,00). O sinal sugere
   automaticamente 50% do valor do pedido, mas **para de recalcular** assim que o usuário edita

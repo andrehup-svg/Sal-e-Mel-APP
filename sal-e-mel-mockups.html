@@ -1078,11 +1078,11 @@
                 <label>Como precifica</label>
                 <select id="cf-tipo-m" onchange="catTipoMudou('m')">
                   <option value="cento">Por cento (100 unidades)</option>
-                  <option value="pacote">Preço varia por produto</option>
+                  <option value="unidade">Por unidade</option>
                 </select>
               </div>
               <div class="field" id="cf-preco-campo-m">
-                <label>Preço por 100 unidades (R$)</label>
+                <label id="cf-preco-label-m">Preço por 100 unidades (R$)</label>
                 <input type="number" id="cf-preco-m" min="0">
               </div>
               <div style="display:flex; gap:8px;">
@@ -1103,11 +1103,7 @@
               </div>
               <div class="field">
                 <label>Categoria de preço</label>
-                <select id="pf-categoria-m" onchange="categoriaProdutoMudou('m')"></select>
-              </div>
-              <div class="field" id="pf-preco-campo-m" style="display:none;">
-                <label>Preço do pacote (R$)</label>
-                <input type="number" id="pf-preco-m" min="0">
+                <select id="pf-categoria-m"></select>
               </div>
               <div style="display:flex; gap:8px;">
                 <button class="btn-primary" style="flex:1;" id="pf-submit-m" onclick="submeterProduto('m')">Adicionar produto</button>
@@ -1157,11 +1153,11 @@
                   <label>Como precifica</label>
                   <select id="cf-tipo-d" onchange="catTipoMudou('d')">
                     <option value="cento">Por cento (100 unidades)</option>
-                    <option value="pacote">Preço varia por produto</option>
+                    <option value="unidade">Por unidade</option>
                   </select>
                 </div>
                 <div class="field" id="cf-preco-campo-d">
-                  <label>Preço por 100 unidades (R$)</label>
+                  <label id="cf-preco-label-d">Preço por 100 unidades (R$)</label>
                   <input type="number" id="cf-preco-d" min="0">
                 </div>
                 <div style="display:flex; gap:8px;">
@@ -1182,11 +1178,7 @@
                 </div>
                 <div class="field">
                   <label>Categoria de preço</label>
-                  <select id="pf-categoria-d" onchange="categoriaProdutoMudou('d')"></select>
-                </div>
-                <div class="field" id="pf-preco-campo-d" style="display:none;">
-                  <label>Preço do pacote (R$)</label>
-                  <input type="number" id="pf-preco-d" min="0">
+                  <select id="pf-categoria-d"></select>
                 </div>
                 <div style="display:flex; gap:8px;">
                   <button class="btn-primary" style="flex:1;" id="pf-submit-d" onclick="submeterProduto('d')">Adicionar produto</button>
@@ -2162,10 +2154,10 @@
 
   /* ---- categorias de precificação (base compartilhada) ---- */
   var CATEGORIAS = [
-    {id:'cat1', nome:'Doces tradicionais', tipo:'cento', precoCento:90},
-    {id:'cat2', nome:'Doces especiais', tipo:'cento', precoCento:110},
-    {id:'cat3', nome:'Salgados', tipo:'cento', precoCento:480},
-    {id:'cat4', nome:'Pacotes sob encomenda', tipo:'pacote'}
+    {id:'cat1', nome:'Doces tradicionais', tipo:'cento', preco:90},
+    {id:'cat2', nome:'Doces especiais', tipo:'cento', preco:110},
+    {id:'cat3', nome:'Salgados', tipo:'cento', preco:480},
+    {id:'cat4', nome:'Itens sob encomenda', tipo:'unidade', preco:620}
   ];
   var proximaCategoriaId = 5;
 
@@ -2176,7 +2168,7 @@
     {id:'p3', nome:'Cajuzinho', categoriaId:'cat2', vendidoMes:150},
     {id:'p4', nome:'Docinho de churros', categoriaId:'cat2', vendidoMes:90},
     {id:'p5', nome:'Coxinha', categoriaId:'cat3', vendidoMes:260},
-    {id:'p6', nome:'Kit festa infantil', categoriaId:'cat4', preco:620, vendidoMes:4}
+    {id:'p6', nome:'Kit festa infantil', categoriaId:'cat4', vendidoMes:4}
   ];
   var proximoProdutoId = 7;
 
@@ -2191,18 +2183,18 @@
   }
   function categoriaLabel(cat){
     if(!cat) return '—';
-    return cat.tipo==='cento' ? (formatBRL(cat.precoCento)+' /cento') : 'preço por produto';
+    return cat.tipo==='cento' ? (formatBRL(cat.preco)+' /cento') : (formatBRL(cat.preco)+' /un');
   }
   function precoUnitarioLabel(p){
     var cat = getCategoria(p.categoriaId);
     if(!cat) return '—';
-    return cat.tipo==='cento' ? (formatBRL(cat.precoCento)+' /cento · '+cat.nome) : (formatBRL(p.preco)+' /pacote');
+    return cat.tipo==='cento' ? (formatBRL(cat.preco)+' /cento · '+cat.nome) : (formatBRL(cat.preco)+' /un · '+cat.nome);
   }
   function precoLinha(produto, qtd){
     if(!produto) return 0;
     var cat = getCategoria(produto.categoriaId);
     if(!cat) return 0;
-    return cat.tipo==='cento' ? (cat.precoCento * (qtd/100)) : (produto.preco * qtd);
+    return cat.tipo==='cento' ? (cat.preco * (qtd/100)) : (cat.preco * qtd);
   }
   function opcoesProdutoHTML(selectedId){
     return CATALOGO.map(function(p){
@@ -2228,7 +2220,6 @@
       if(!sel) return;
       var atual = sel.value;
       sel.innerHTML = opcoesCategoriaHTML(atual);
-      categoriaProdutoMudou(scope);
     });
   }
   function produtosTab(scope, tab){
@@ -2244,7 +2235,8 @@
 
   function catTipoMudou(scope){
     var tipo = document.getElementById('cf-tipo-'+scope).value;
-    document.getElementById('cf-preco-campo-'+scope).style.display = tipo==='cento' ? 'block' : 'none';
+    document.getElementById('cf-preco-label-'+scope).textContent =
+      tipo==='cento' ? 'Preço por 100 unidades (R$)' : 'Preço por unidade (R$)';
   }
   function limparFormCategoria(scope){
     document.getElementById('cf-nome-'+scope).value = '';
@@ -2262,7 +2254,7 @@
     editandoCategoriaId[scope] = id;
     document.getElementById('cf-nome-'+scope).value = c.nome;
     document.getElementById('cf-tipo-'+scope).value = c.tipo;
-    document.getElementById('cf-preco-'+scope).value = c.tipo==='cento' ? c.precoCento : '';
+    document.getElementById('cf-preco-'+scope).value = c.preco;
     catTipoMudou(scope);
     document.getElementById('cf-titulo-'+scope).textContent = 'Editando: '+c.nome;
     document.getElementById('cf-submit-'+scope).textContent = 'Salvar alterações';
@@ -2272,17 +2264,14 @@
   function submeterCategoria(scope){
     var nome = document.getElementById('cf-nome-'+scope).value.trim();
     var tipo = document.getElementById('cf-tipo-'+scope).value;
-    var precoCento = parseFloat(document.getElementById('cf-preco-'+scope).value);
-    if(!nome || (tipo==='cento' && !precoCento)) return;
+    var preco = parseFloat(document.getElementById('cf-preco-'+scope).value);
+    if(!nome || !preco) return;
     var id = editandoCategoriaId[scope];
     if(id){
       var c = getCategoria(id);
-      c.nome = nome; c.tipo = tipo;
-      if(tipo==='cento') c.precoCento = precoCento; else delete c.precoCento;
+      c.nome = nome; c.tipo = tipo; c.preco = preco;
     } else {
-      var nova = {id:'cat'+(proximaCategoriaId++), nome:nome, tipo:tipo};
-      if(tipo==='cento') nova.precoCento = precoCento;
-      CATEGORIAS.push(nova);
+      CATEGORIAS.push({id:'cat'+(proximaCategoriaId++), nome:nome, tipo:tipo, preco:preco});
     }
     limparFormCategoria(scope);
     renderListaCategorias('m'); renderListaCategorias('d');
@@ -2334,16 +2323,9 @@
   /* ---- página Produtos: seção Produtos (criar/editar) + lista ---- */
   var editandoProdutoId = {m:null, d:null};
 
-  function categoriaProdutoMudou(scope){
-    var sel = document.getElementById('pf-categoria-'+scope);
-    var cat = getCategoria(sel.value);
-    var mostrarPreco = cat && cat.tipo==='pacote';
-    document.getElementById('pf-preco-campo-'+scope).style.display = mostrarPreco ? 'block' : 'none';
-  }
   function limparFormProduto(scope){
     document.getElementById('pf-nome-'+scope).value = '';
     refreshCategoriaSelects();
-    document.getElementById('pf-preco-'+scope).value = '';
     editandoProdutoId[scope] = null;
     document.getElementById('pf-titulo-'+scope).textContent = 'Novo produto';
     document.getElementById('pf-submit-'+scope).textContent = 'Adicionar produto';
@@ -2355,8 +2337,6 @@
     editandoProdutoId[scope] = id;
     document.getElementById('pf-nome-'+scope).value = p.nome;
     document.getElementById('pf-categoria-'+scope).value = p.categoriaId;
-    categoriaProdutoMudou(scope);
-    document.getElementById('pf-preco-'+scope).value = p.preco || '';
     document.getElementById('pf-titulo-'+scope).textContent = 'Editando: '+p.nome;
     document.getElementById('pf-submit-'+scope).textContent = 'Salvar alterações';
     document.getElementById('pf-cancelar-'+scope).style.display = 'inline-block';
@@ -2366,18 +2346,13 @@
     var nome = document.getElementById('pf-nome-'+scope).value.trim();
     var categoriaId = document.getElementById('pf-categoria-'+scope).value;
     var cat = getCategoria(categoriaId);
-    var preco = parseFloat(document.getElementById('pf-preco-'+scope).value);
     if(!nome || !cat) return;
-    if(cat.tipo==='pacote' && !preco) return;
     var id = editandoProdutoId[scope];
     if(id){
       var p = CATALOGO.find(function(x){ return x.id===id; });
       p.nome = nome; p.categoriaId = categoriaId;
-      if(cat.tipo==='pacote') p.preco = preco; else delete p.preco;
     } else {
-      var novo = {id:'p'+(proximoProdutoId++), nome:nome, categoriaId:categoriaId, vendidoMes:0};
-      if(cat.tipo==='pacote') novo.preco = preco;
-      CATALOGO.push(novo);
+      CATALOGO.push({id:'p'+(proximoProdutoId++), nome:nome, categoriaId:categoriaId, vendidoMes:0});
     }
     limparFormProduto(scope);
     renderListaProdutos('m'); renderListaProdutos('d');

@@ -1,26 +1,48 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Mel — primária */
+  --color-mel-100: #fbebcf;
+  --color-mel-200: #f7d9a0;
+  --color-mel-400: #f2b44e;
+  --color-mel-500: #e8a33d;
+  --color-mel-700: #b9761f;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Cacau e neutros */
+  --color-cacau-600: #6b3e22;
+  --color-cacau-900: #3a2313;
+  --color-tinta: #241c14;
+  --color-texto-medio: #6b5646;
+  --color-texto-suave: #7a6a5a;
+  --color-creme: #faf0e1;
+  --color-papel: #fffbf4;
+  --color-borda: #ebd9bc;
+  --color-desabilitado-bg: #f0e5d2;
+  --color-desabilitado-fg: #a79684;
+
+  /* Confete — acentos */
+  --color-confete-rosa: #ef7c8e;
+  --color-confete-menta: #6fc8b1;
+  --color-confete-azul: #7fb3e8;
+  --color-sucesso: #4fa97c;
+  --color-erro: #d0533f;
+
+  /* Tipografia */
+  --font-display: var(--font-display-src), Georgia, serif;
+  --font-ui: var(--font-ui-src), system-ui, sans-serif;
+  --font-mono-ds: var(--font-mono-ds-src), ui-monospace, monospace;
+
+  /* Raio */
+  --radius-input: 14px;
+  --radius-bloco: 20px;
+  --radius-card: 24px;
+
+  /* Sombra dura (sem blur) */
+  --shadow-btn-primario: 0 2px 0 var(--color-mel-700);
+  --shadow-btn-secundario: 0 2px 0 var(--color-cacau-900);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-creme);
+  color: var(--color-tinta);
 }

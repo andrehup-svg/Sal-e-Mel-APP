@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="page">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:ital,wght@0,300..900;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #FAF0E1; }
+  a { color: #B9761F; text-decoration: none; }
+  a:hover { color: #6B3E22; text-decoration: underline; }
+</style>
+</helmet>
+
+<div style="font-family: Nunito, system-ui, sans-serif; color: #241C14; background: #FAF0E1; padding: 0 24px 96px;">
+
+  <div style="max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: 72px;">
+
+    <header style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; padding: 72px 0 0;">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 40px;">
+        <img src="assets/sal-e-mel-logo.jpg" alt="Sal e Mel" style="width: 260px; height: 260px; object-fit: cover; border-radius: 28px; background: #FFFBF4; flex: 0 0 auto;">
+        <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+          <div style="font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: #B9761F;">Design System v1.0</div>
+          <h1 style="font-family: 'DM Serif Display', serif; font-size: 64px; line-height: 1; margin: 0; color: #241C14;">Sal e Mel</h1>
+          <p style="font-size: 19px; line-height: 1.55; margin: 0; color: #6B5646; max-width: 46ch; text-wrap: pretty;">Sistema visual para produto web e redes sociais. Extraído da logo: o dourado da coxinha, o cacau do brigadeiro, o creme da forminha e os confetes do granulado.</p>
+        </div>
+      </div>
+    </header>
+
+    <section style="display: flex; flex-direction: column; gap: 28px;">
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 2px solid #EBD9BC; padding-bottom: 12px;">
+        <span style="font-family: 'DM Mono', monospace; font-size: 13px; color: #B9761F;">01</span>
+        <h2 style="font-family: 'DM Serif Display', serif; font-size: 34px; margin: 0;">Cores</h2>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <h3 style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #7A6A5A; margin: 0;">Mel — primária</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 92px; background: #FBEBCF;"></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">mel-100</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#FBEBCF</span></div>
+          </div>
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 92px; background: #F7D9A0;"></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">mel-200</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#F7D9A0</span></div>
+          </div>
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 92px; background: #F2B44E;"></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">mel-400</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#F2B44E</span></div>
+          </div>
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 92px; background: #E8A33D; display: flex; align-items: flex-start; padding: 10px;"><span style="background: #241C14; color: #FBEBCF; font-family: 'DM Mono', monospace; font-size: 10px; padding: 3px 7px; border-radius: 999px;">BASE</span></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">mel-500</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#E8A33D</span></div>
+          </div>
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 92px; background: #B9761F;"></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">mel-700</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#B9761F</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <h3 style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #7A6A5A; margin: 0;">Cacau e neutros</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 92px; background: #6B3E22;"></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">cacau-600</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#6B3E22</span></div>
+          </div>
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 92px; background: #3A2313;"></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">cacau-900</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#3A2313</span></div>
+          </div>
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 92px; background: #241C14;"></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">tinta</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#241C14</span></div>
+          </div>
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 92px; background: #FAF0E1;"></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">creme</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#FAF0E1</span></div>
+          </div>
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 92px; background: #FFFBF4;"></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">papel</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#FFFBF4</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <h3 style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #7A6A5A; margin: 0;">Confete — acentos de granulado</h3>
+        <p style="margin: 0; font-size: 15px; color: #6B5646; max-width: 60ch;">Uso pontual: badges, tags de categoria, ilustração e detalhes em posts. Nunca como fundo de texto longo.</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 72px; background: #EF7C8E;"></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">confete-rosa</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#EF7C8E</span></div>
+          </div>
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 72px; background: #6FC8B1;"></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">confete-menta</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#6FC8B1</span></div>
+          </div>
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 72px; background: #7FB3E8;"></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">confete-azul</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#7FB3E8</span></div>
+          </div>
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 72px; background: #4FA97C;"></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">sucesso</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#4FA97C</span></div>
+          </div>
+          <div style="border-radius: 16px; overflow: hidden; background: #FFFBF4; border: 1px solid #EBD9BC;">
+            <div style="height: 72px; background: #D0533F;"></div>
+            <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 14px; font-weight: 700;">erro</span><span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A;">#D0533F</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px;">
+        <div style="border-radius: 16px; padding: 18px 20px; background: #FFFBF4; border: 1px solid #EBD9BC; display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 15px; font-weight: 800; color: #4FA97C;">Combinações aprovadas</span>
+          <span style="font-size: 14px; color: #6B5646; line-height: 1.5;">tinta sobre creme · tinta sobre mel-500 · creme sobre cacau-900 · papel sobre cacau-600</span>
+        </div>
+        <div style="border-radius: 16px; padding: 18px 20px; background: #FFFBF4; border: 1px solid #EBD9BC; display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 15px; font-weight: 800; color: #D0533F;">Evitar</span>
+          <span style="font-size: 14px; color: #6B5646; line-height: 1.5;">branco puro sobre mel-500 · confetes como cor de texto · mel-200 sobre creme</span>
+        </div>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 28px;">
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 2px solid #EBD9BC; padding-bottom: 12px;">
+        <span style="font-family: 'DM Mono', monospace; font-size: 13px; color: #B9761F;">02</span>
+        <h2 style="font-family: 'DM Serif Display', serif; font-size: 34px; margin: 0;">Tipografia</h2>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+        <div style="background: #FFFBF4; border: 1px solid #EBD9BC; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #B9761F;">Display · DM Serif Display</span>
+          <span style="font-family: 'DM Serif Display', serif; font-size: 56px; line-height: 1;">Brigadeiro</span>
+          <span style="font-size: 14px; color: #6B5646;">Títulos, nomes de produto e chamadas. Nunca abaixo de 24px.</span>
+        </div>
+        <div style="background: #FFFBF4; border: 1px solid #EBD9BC; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #B9761F;">Texto · Nunito</span>
+          <span style="font-size: 44px; font-weight: 800; line-height: 1.1;">Coxinha</span>
+          <span style="font-size: 14px; color: #6B5646;">Interface, corpo de texto, botões e rótulos. Pesos 400, 600 e 800.</span>
+        </div>
+      </div>
+
+      <div style="background: #FFFBF4; border: 1px solid #EBD9BC; border-radius: 20px; padding: 28px 24px; display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 20px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A; width: 130px;">display/48</span>
+          <span style="font-family: 'DM Serif Display', serif; font-size: 48px; line-height: 1.05;">Encomende sua festa</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 20px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A; width: 130px;">título/32</span>
+          <span style="font-family: 'DM Serif Display', serif; font-size: 32px; line-height: 1.15;">Docinhos tradicionais</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 20px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A; width: 130px;">seção/20 · 800</span>
+          <span style="font-size: 20px; font-weight: 800;">Salgados fritos na hora</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 20px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A; width: 130px;">corpo/16 · 400</span>
+          <span style="font-size: 16px; line-height: 1.6; max-width: 52ch; color: #3A2313;">Cento de brigadeiro gourmet feito no dia da entrega, com granulado belga e forminha personalizada nas cores da sua festa.</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 20px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A; width: 130px;">apoio/14 · 600</span>
+          <span style="font-size: 14px; font-weight: 600; color: #6B5646;">Pedido mínimo de 50 unidades por sabor</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 20px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #7A6A5A; width: 130px;">rótulo/12 · mono</span>
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #B9761F;">Entrega em 48h</span>
+        </div>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 28px;">
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 2px solid #EBD9BC; padding-bottom: 12px;">
+        <span style="font-family: 'DM Mono', monospace; font-size: 13px; color: #B9761F;">03</span>
+        <h2 style="font-family: 'DM Serif Display', serif; font-size: 34px; margin: 0;">Botões e inputs</h2>
+      </div>
+
+      <div style="background: #FFFBF4; border: 1px solid #EBD9BC; border-radius: 20px; padding: 28px 24px; display: flex; flex-direction: column; gap: 26px;">
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #7A6A5A;">Variantes</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <button style="font-family: Nunito, sans-serif; font-size: 16px; font-weight: 800; color: #241C14; background: #E8A33D; border: none; border-radius: 999px; padding: 14px 28px; cursor: pointer; box-shadow: 0 2px 0 #B9761F;" style-hover="background: #F2B44E;" style-active="transform: translateY(2px); box-shadow: none;">Fazer pedido</button>
+            <button style="font-family: Nunito, sans-serif; font-size: 16px; font-weight: 800; color: #FFFBF4; background: #6B3E22; border: none; border-radius: 999px; padding: 14px 28px; cursor: pointer; box-shadow: 0 2px 0 #3A2313;" style-hover="background: #7D4B2C;" style-active="transform: translateY(2px); box-shadow: none;">Ver cardápio</button>
+            <button style="font-family: Nunito, sans-serif; font-size: 16px; font-weight: 800; color: #6B3E22; background: transparent; border: 2px solid #6B3E22; border-radius: 999px; padding: 12px 26px; cursor: pointer;" style-hover="background: #FBEBCF;">Falar no WhatsApp</button>
+            <button style="font-family: Nunito, sans-serif; font-size: 16px; font-weight: 800; color: #B9761F; background: transparent; border: none; border-radius: 999px; padding: 14px 18px; cursor: pointer;" style-hover="background: #FBEBCF;">Cancelar</button>
+            <button style="font-family: Nunito, sans-serif; font-size: 16px; font-weight: 800; color: #A79684; background: #F0E5D2; border: none; border-radius: 999px; padding: 14px 28px; cursor: not-allowed;">Indisponível</button>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #7A6A5A;">Tamanhos</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <button style="font-family: Nunito, sans-serif; font-size: 14px; font-weight: 800; color: #241C14; background: #E8A33D; border: none; border-radius: 999px; padding: 9px 18px; cursor: pointer;">Pequeno · 36</button>
+            <button style="font-family: Nunito, sans-serif; font-size: 16px; font-weight: 800; color: #241C14; background: #E8A33D; border: none; border-radius: 999px; padding: 14px 28px; cursor: pointer;">Médio · 48</button>
+            <button style="font-family: Nunito, sans-serif; font-size: 18px; font-weight: 800; color: #241C14; background: #E8A33D; border: none; border-radius: 999px; padding: 18px 36px; cursor: pointer;">Grande · 56</button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px;">
+          <label style="display: flex; flex-direction: column; gap: 7px;">
+            <span style="font-size: 14px; font-weight: 800;">Nome de quem faz aniversário</span>
+            <input type="text" placeholder="Ex: Helena" style="font-family: Nunito, sans-serif; font-size: 16px; color: #241C14; background: #FFFFFF; border: 2px solid #EBD9BC; border-radius: 14px; padding: 13px 16px; outline: none;" style-focus="border-color: #E8A33D;">
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 7px;">
+            <span style="font-size: 14px; font-weight: 800;">Data da festa</span>
+            <input type="text" value="12/10/2026" style="font-family: Nunito, sans-serif; font-size: 16px; color: #241C14; background: #FFFFFF; border: 2px solid #E8A33D; border-radius: 14px; padding: 13px 16px; outline: none;">
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 7px;">
+            <span style="font-size: 14px; font-weight: 800;">Quantidade</span>
+            <input type="text" value="30" style="font-family: Nunito, sans-serif; font-size: 16px; color: #241C14; background: #FFFFFF; border: 2px solid #D0533F; border-radius: 14px; padding: 13px 16px; outline: none;">
+            <span style="font-size: 13px; font-weight: 600; color: #D0533F;">Pedido mínimo de 50 unidades</span>
+          </label>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #7A6A5A; width: 100%;">Tags e status</span>
+          <span style="font-size: 13px; font-weight: 800; color: #241C14; background: #F7D9A0; border-radius: 999px; padding: 7px 14px;">Doces</span>
+          <span style="font-size: 13px; font-weight: 800; color: #241C14; background: #EF7C8E; border-radius: 999px; padding: 7px 14px;">Mais pedido</span>
+          <span style="font-size: 13px; font-weight: 800; color: #241C14; background: #6FC8B1; border-radius: 999px; padding: 7px 14px;">Sem lactose</span>
+          <span style="font-size: 13px; font-weight: 800; color: #FFFBF4; background: #4FA97C; border-radius: 999px; padding: 7px 14px;">Pedido confirmado</span>
+          <span style="font-size: 13px; font-weight: 800; color: #FFFBF4; background: #D0533F; border-radius: 999px; padding: 7px 14px;">Esgotado</span>
+        </div>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 28px;">
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 2px solid #EBD9BC; padding-bottom: 12px;">
+        <span style="font-family: 'DM Mono', monospace; font-size: 13px; color: #B9761F;">04</span>
+        <h2 style="font-family: 'DM Serif Display', serif; font-size: 34px; margin: 0;">Cards e containers</h2>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px;">
+        <div style="background: #FFFBF4; border: 1px solid #EBD9BC; border-radius: 24px; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 150px; background: repeating-linear-gradient(135deg, #F7D9A0 0 12px, #FBEBCF 12px 24px); display: flex; align-items: center; justify-content: center;">
+            <span style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #8A6A3A; background: #FFFBF4; padding: 5px 10px; border-radius: 999px;">foto do docinho</span>
+          </div>
+          <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-size: 13px; font-weight: 800; color: #241C14; background: #F7D9A0; border-radius: 999px; padding: 5px 12px; align-self: flex-start;">Doces</span>
+            <span style="font-family: 'DM Serif Display', serif; font-size: 24px; line-height: 1.1;">Brigadeiro belga</span>
+            <span style="font-size: 14px; color: #6B5646; line-height: 1.5;">Cento com granulado importado e forminha na cor da festa.</span>
+            <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 4px;">
+              <span style="font-size: 22px; font-weight: 800;">R$ 145</span>
+              <span style="font-size: 13px; color: #7A6A5A;">/ cento</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #6B3E22; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 12px; color: #FFFBF4;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #F7D9A0;">Destaque</span>
+          <span style="font-family: 'DM Serif Display', serif; font-size: 30px; line-height: 1.1;">Kit festa completa</span>
+          <span style="font-size: 15px; line-height: 1.55; color: #F0DDC6;">300 salgados, 200 docinhos e bolo de dois andares, com montagem inclusa.</span>
+          <button style="font-family: Nunito, sans-serif; font-size: 15px; font-weight: 800; color: #241C14; background: #E8A33D; border: none; border-radius: 999px; padding: 12px 24px; align-self: flex-start; cursor: pointer; margin-top: 4px;">Montar meu kit</button>
+        </div>
+
+        <div style="background: #FBEBCF; border: 2px dashed #E8A33D; border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 10px; justify-content: center;">
+          <span style="font-family: 'DM Serif Display', serif; font-size: 24px;">Aviso e estado vazio</span>
+          <span style="font-size: 15px; line-height: 1.55; color: #6B5646;">Você ainda não adicionou nenhum item. Comece pelos mais pedidos da semana.</span>
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #B9761F;">raio 24 · borda tracejada 2px</span>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+        <div style="background: #FFFBF4; border: 1px solid #EBD9BC; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #7A6A5A;">Raios</span>
+          <span style="font-size: 14px; color: #6B5646; line-height: 1.6;">14 inputs · 20 blocos internos · 24 cards · 999 botões e tags</span>
+        </div>
+        <div style="background: #FFFBF4; border: 1px solid #EBD9BC; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #7A6A5A;">Espaçamento</span>
+          <span style="font-size: 14px; color: #6B5646; line-height: 1.6;">Escala de 4: 4 · 8 · 12 · 16 · 24 · 32 · 48 · 72</span>
+        </div>
+        <div style="background: #FFFBF4; border: 1px solid #EBD9BC; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #7A6A5A;">Elevação</span>
+          <span style="font-size: 14px; color: #6B5646; line-height: 1.6;">Borda sólida em vez de sombra difusa. Botões usam sombra dura de 2px.</span>
+        </div>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 28px;">
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 2px solid #EBD9BC; padding-bottom: 12px;">
+        <span style="font-family: 'DM Mono', monospace; font-size: 13px; color: #B9761F;">05</span>
+        <h2 style="font-family: 'DM Serif Display', serif; font-size: 34px; margin: 0;">Uso da logo</h2>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px;">
+        <div style="border-radius: 20px; overflow: hidden; border: 1px solid #EBD9BC; background: #FFFBF4;">
+          <div style="background: #FAF0E1; height: 170px; display: flex; align-items: center; justify-content: center;">
+            <img src="assets/sal-e-mel-logo.jpg" alt="Logo sobre creme" style="width: 150px; height: 150px; object-fit: cover; border-radius: 12px;">
+          </div>
+          <div style="padding: 14px 18px; display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-size: 14px; font-weight: 800; color: #4FA97C;">Preferencial</span>
+            <span style="font-size: 14px; color: #6B5646;">Logo completa sobre creme ou papel.</span>
+          </div>
+        </div>
+        <div style="border-radius: 20px; overflow: hidden; border: 1px solid #EBD9BC; background: #FFFBF4;">
+          <div style="background: #6B3E22; height: 170px; display: flex; align-items: center; justify-content: center;">
+            <img src="assets/sal-e-mel-logo.jpg" alt="Logo sobre cacau" style="width: 150px; height: 150px; object-fit: cover; border-radius: 12px;">
+          </div>
+          <div style="padding: 14px 18px; display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-size: 14px; font-weight: 800; color: #4FA97C;">Aceito</span>
+            <span style="font-size: 14px; color: #6B5646;">Sobre cacau, sempre com o fundo creme da logo preservado.</span>
+          </div>
+        </div>
+        <div style="border-radius: 20px; overflow: hidden; border: 1px solid #EBD9BC; background: #FFFBF4;">
+          <div style="background: repeating-linear-gradient(135deg, #EF7C8E 0 14px, #7FB3E8 14px 28px); height: 170px; display: flex; align-items: center; justify-content: center;">
+            <img src="assets/sal-e-mel-logo.jpg" alt="Logo sobre fundo poluído" style="width: 150px; height: 150px; object-fit: cover; border-radius: 12px; opacity: 0.85;">
+          </div>
+          <div style="padding: 14px 18px; display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-size: 14px; font-weight: 800; color: #D0533F;">Nunca</span>
+            <span style="font-size: 14px; color: #6B5646;">Fundos saturados, padronagens ou fotos sem área de respiro.</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #FFFBF4; border: 1px solid #EBD9BC; border-radius: 20px; padding: 22px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #7A6A5A;">Área de respiro</span>
+          <span style="font-size: 14px; color: #6B5646; line-height: 1.6;">Margem livre igual à altura da coxinha em todos os lados.</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #7A6A5A;">Tamanho mínimo</span>
+          <span style="font-size: 14px; color: #6B5646; line-height: 1.6;">120px na tela com o slogan; abaixo disso, use só os personagens.</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #7A6A5A;">Proibido</span>
+          <span style="font-size: 14px; color: #6B5646; line-height: 1.6;">Girar, distorcer, trocar as cores ou aplicar sombra nos personagens.</span>
+        </div>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 28px;">
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 2px solid #EBD9BC; padding-bottom: 12px;">
+        <span style="font-family: 'DM Mono', monospace; font-size: 13px; color: #B9761F;">06</span>
+        <h2 style="font-family: 'DM Serif Display', serif; font-size: 34px; margin: 0;">Aplicação</h2>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #7A6A5A;">Produto web — catálogo de encomendas</span>
+        <div style="border: 1px solid #EBD9BC; border-radius: 24px; overflow: hidden; background: #FAF0E1;">
+          <div style="background: #FFFBF4; border-bottom: 1px solid #EBD9BC; padding: 14px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px;">
+            <img src="assets/sal-e-mel-logo.jpg" alt="Sal e Mel" style="width: 44px; height: 44px; object-fit: cover; border-radius: 10px;">
+            <span style="font-family: 'DM Serif Display', serif; font-size: 22px;">Sal e Mel</span>
+            <div style="display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap;">
+              <span style="font-size: 14px; font-weight: 800; color: #241C14; background: #E8A33D; border-radius: 999px; padding: 8px 16px;">Doces</span>
+              <span style="font-size: 14px; font-weight: 700; color: #6B5646; padding: 8px 16px;">Salgados</span>
+              <span style="font-size: 14px; font-weight: 700; color: #6B5646; padding: 8px 16px;">Kits</span>
+              <span style="font-size: 14px; font-weight: 800; color: #FFFBF4; background: #6B3E22; border-radius: 999px; padding: 8px 16px;">Carrinho · 3</span>
+            </div>
+          </div>
+          <div style="padding: 24px 20px 28px; display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; justify-content: space-between;">
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-family: 'DM Serif Display', serif; font-size: 34px; line-height: 1.05;">Docinhos para 12/10</span>
+                <span style="font-size: 15px; color: #6B5646;">18 opções disponíveis para a data escolhida</span>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <span style="font-size: 13px; font-weight: 800; color: #241C14; background: #EF7C8E; border-radius: 999px; padding: 7px 14px;">Mais pedidos</span>
+                <span style="font-size: 13px; font-weight: 800; color: #241C14; background: #6FC8B1; border-radius: 999px; padding: 7px 14px;">Sem lactose</span>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px;">
+              <div style="background: #FFFBF4; border: 1px solid #EBD9BC; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="height: 110px; background: repeating-linear-gradient(135deg, #F7D9A0 0 12px, #FBEBCF 12px 24px);"></div>
+                <div style="padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-size: 17px; font-weight: 800;">Brigadeiro belga</span>
+                  <span style="font-size: 14px; color: #7A6A5A;">R$ 145 / cento</span>
+                  <button style="font-family: Nunito, sans-serif; font-size: 14px; font-weight: 800; color: #241C14; background: #E8A33D; border: none; border-radius: 999px; padding: 10px 16px; cursor: pointer; margin-top: 4px;">Adicionar</button>
+                </div>
+              </div>
+              <div style="background: #FFFBF4; border: 1px solid #EBD9BC; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="height: 110px; background: repeating-linear-gradient(135deg, #E8C9A8 0 12px, #F5E3CB 12px 24px);"></div>
+                <div style="padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-size: 17px; font-weight: 800;">Beijinho</span>
+                  <span style="font-size: 14px; color: #7A6A5A;">R$ 130 / cento</span>
+                  <button style="font-family: Nunito, sans-serif; font-size: 14px; font-weight: 800; color: #241C14; background: #E8A33D; border: none; border-radius: 999px; padding: 10px 16px; cursor: pointer; margin-top: 4px;">Adicionar</button>
+                </div>
+              </div>
+              <div style="background: #FFFBF4; border: 1px solid #EBD9BC; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="height: 110px; background: repeating-linear-gradient(135deg, #D8B08A 0 12px, #EFD9BE 12px 24px);"></div>
+                <div style="padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-size: 17px; font-weight: 800;">Coxinha mini</span>
+                  <span style="font-size: 14px; color: #7A6A5A;">R$ 165 / cento</span>
+                  <button style="font-family: Nunito, sans-serif; font-size: 14px; font-weight: 800; color: #241C14; background: #E8A33D; border: none; border-radius: 999px; padding: 10px 16px; cursor: pointer; margin-top: 4px;">Adicionar</button>
+                </div>
+              </div>
+              <div style="background: #FFFBF4; border: 1px solid #EBD9BC; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="height: 110px; background: repeating-linear-gradient(135deg, #F0D2B0 0 12px, #FBEBCF 12px 24px);"></div>
+                <div style="padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-size: 17px; font-weight: 800;">Empada de frango</span>
+                  <span style="font-size: 14px; color: #7A6A5A;">R$ 180 / cento</span>
+                  <button style="font-family: Nunito, sans-serif; font-size: 14px; font-weight: 800; color: #A79684; background: #F0E5D2; border: none; border-radius: 999px; padding: 10px 16px; cursor: not-allowed; margin-top: 4px;">Esgotado</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #7A6A5A;">Redes sociais — post 1:1</span>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px;">
+          <div style="aspect-ratio: 1 / 1; background: #6B3E22; border-radius: 20px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; color: #FFFBF4;">
+            <span style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #F7D9A0;">Encomendas de outubro</span>
+            <span style="font-family: 'DM Serif Display', serif; font-size: 46px; line-height: 1.02;">Cento de brigadeiro por <span style="color: #E8A33D;">R$ 145</span></span>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <img src="assets/sal-e-mel-logo.jpg" alt="Sal e Mel" style="width: 48px; height: 48px; object-fit: cover; border-radius: 10px;">
+              <span style="font-size: 15px; font-weight: 800; color: #F0DDC6;">@saleemel · pedidos no WhatsApp</span>
+            </div>
+          </div>
+          <div style="aspect-ratio: 1 / 1; background: #E8A33D; border-radius: 20px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; color: #241C14;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <span style="font-size: 13px; font-weight: 800; background: #FFFBF4; border-radius: 999px; padding: 6px 14px;">Doces</span>
+              <span style="font-size: 13px; font-weight: 800; background: #EF7C8E; border-radius: 999px; padding: 6px 14px;">Salgados</span>
+              <span style="font-size: 13px; font-weight: 800; background: #6FC8B1; border-radius: 999px; padding: 6px 14px;">Bolos</span>
+            </div>
+            <span style="font-family: 'DM Serif Display', serif; font-size: 46px; line-height: 1.02;">A festa fica pronta com a gente</span>
+            <span style="font-size: 15px; font-weight: 800;">Peça com 5 dias de antecedência</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

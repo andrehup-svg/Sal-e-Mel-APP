@@ -19,12 +19,9 @@ create table clientes (
 create table categorias_preco (
   id uuid primary key default gen_random_uuid(),
   nome text not null,
-  tipo text not null check (tipo in ('cento','pacote')),
-  preco_cento numeric(10,2), -- obrigatório apenas quando tipo = 'cento'
-  created_at timestamptz not null default now(),
-  constraint preco_cento_exigido check (
-    (tipo = 'cento' and preco_cento is not null) or (tipo = 'pacote')
-  )
+  tipo text not null check (tipo in ('cento','unidade')),
+  preco numeric(10,2) not null, -- preço por 100 unidades (tipo 'cento') ou por unidade (tipo 'unidade')
+  created_at timestamptz not null default now()
 );
 
 -- ---------- Produtos ----------
@@ -32,7 +29,6 @@ create table produtos (
   id uuid primary key default gen_random_uuid(),
   nome text not null,
   categoria_id uuid not null references categorias_preco(id) on delete restrict,
-  preco numeric(10,2), -- só usado quando a categoria é do tipo 'pacote'
   vendido_mes numeric(10,2) not null default 0,
   created_at timestamptz not null default now()
 );
