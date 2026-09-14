@@ -19,6 +19,12 @@ function precoLabel(produto: Produto, categorias: CategoriaPreco[]) {
     : `${formatBRL(cat.preco)} /un · ${cat.nome}`;
 }
 
+function categoriaOptionLabel(cat: CategoriaPreco) {
+  return cat.tipo === "cento"
+    ? `${cat.nome} — ${formatBRL(cat.preco)} /cento`
+    : `${cat.nome} — ${formatBRL(cat.preco)} /un`;
+}
+
 export default function ProdutosSection({
   produtos,
   categorias,
@@ -84,7 +90,7 @@ export default function ProdutosSection({
             >
               {categorias.map((cat) => (
                 <option key={cat.id} value={cat.id}>
-                  {cat.nome}
+                  {categoriaOptionLabel(cat)}
                 </option>
               ))}
             </Select>

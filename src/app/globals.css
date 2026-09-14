@@ -42,6 +42,20 @@
   --shadow-btn-secundario: 0 2px 0 var(--color-cacau-900);
 }
 
+html,
+body {
+  overflow-x: hidden;
+}
+
+@keyframes drawer-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 body {
   background: var(--color-creme);
   color: var(--color-tinta);

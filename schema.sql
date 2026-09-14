@@ -67,15 +67,20 @@ create table compras (
   id uuid primary key default gen_random_uuid(),
   fornecedor text not null,
   item text,
-  valor numeric(10,2) not null,
+  valor numeric(10,2) not null, -- valor desta linha: a compra inteira, ou 1 parcela dela
   forma_pagamento text not null check (forma_pagamento in ('pix','cartao')),
   cartao_id uuid references cartoes(id), -- obrigatório quando forma_pagamento = 'cartao'
   status text not null default 'Pago' check (status in ('Pago','Na fatura')),
   data_compra date,
+  competencia date not null default date_trunc('month', current_date), -- mês da fatura em que esta linha/parcela conta
+  grupo_compra_id uuid, -- mesma compra parcelada compartilha este id entre as parcelas
+  numero_parcela int not null default 1,
+  total_parcelas int not null default 1,
   created_at timestamptz not null default now(),
   constraint cartao_exigido check (
     (forma_pagamento = 'cartao' and cartao_id is not null) or (forma_pagamento = 'pix')
-  )
+  ),
+  constraint parcela_valida check (numero_parcela >= 1 and numero_parcela <= total_parcelas)
 );
 
 -- ---------- Histórico de faturas pagas ----------
@@ -153,5 +158,79 @@ create policy "authenticated_full_access" on estoque for all using (auth.role() 
 create policy "authenticated_full_access" on parametros_divisao for all using (auth.role() = 'authenticated');
 create policy "authenticated_full_access" on divisao_status_mensal for all using (auth.role() = 'authenticated');
 
--- ---------- Seed: cartão único hoje (Nubank) ----------
-insert into cartoes (nome, dia_vencimento) values ('Nubank', 8);
+-- ============================================================
+-- Funções
+-- ============================================================
+
+-- Marca como "Pago" as compras "Na fatura" de um cartão cuja
+-- competência é o mês da fatura em aberto (p_competencia) ou
+-- anterior (parcelas atrasadas), e registra o total em
+-- faturas_pagas — tudo numa única transação (evita corrida
+-- entre o SELECT do total e o UPDATE do status). Parcelas
+-- futuras (competência > p_competencia) não são afetadas.
+drop function if exists pagar_fatura(uuid);
+
+create or replace function pagar_fatura(p_cartao_id uuid, p_competencia date)
+returns numeric
+language plpgsql
+security invoker
+as $$
+declare
+  v_total numeric(10,2);
+  v_mes date := date_trunc('month', p_competencia)::date;
+begin
+  select coalesce(sum(valor), 0) into v_total
+  from compras
+  where cartao_id = p_cartao_id
+    and forma_pagamento = 'cartao'
+    and status = 'Na fatura'
+    and competencia <= v_mes;
+
+  if v_total = 0 then
+    raise exception 'Não há fatura em aberto para esse cartão.';
+  end if;
+
+  update compras
+  set status = 'Pago'
+  where cartao_id = p_cartao_id
+    and forma_pagamento = 'cartao'
+    and status = 'Na fatura'
+    and competencia <= v_mes;
+
+  insert into faturas_pagas (cartao_id, valor_total) values (p_cartao_id, v_total);
+
+  return v_total;
+end;
+$$;
+
+-- ---------- Seed: cartão único hoje ----------
+insert into cartoes (nome, dia_vencimento) values ('Cartão', 8);
+
+-- ============================================================
+-- Migração: parcelamento de compras
+-- Rode este bloco no SQL Editor do Supabase se o banco já existia
+-- antes desta mudança (colunas/função já criadas acima não fazem
+-- mal se este bloco rodar de novo — é seguro repetir).
+-- ============================================================
+alter table compras add column if not exists competencia date;
+alter table compras add column if not exists grupo_compra_id uuid;
+alter table compras add column if not exists numero_parcela int not null default 1;
+alter table compras add column if not exists total_parcelas int not null default 1;
+
+update compras set competencia = date_trunc('month', coalesce(data_compra, created_at::date))::date
+where competencia is null;
+
+alter table compras alter column competencia set not null;
+alter table compras alter column competencia set default date_trunc('month', current_date);
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'parcela_valida'
+  ) then
+    alter table compras add constraint parcela_valida check (numero_parcela >= 1 and numero_parcela <= total_parcelas);
+  end if;
+end $$;
+
+-- ---------- Renomeia o cartão seed de "Nubank" pra "Cartão" (rodar 1x) ----------
+update cartoes set nome = 'Cartão' where nome = 'Nubank';

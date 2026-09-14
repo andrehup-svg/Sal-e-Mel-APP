@@ -37,3 +37,40 @@ export type Venda = {
   status_entrega: StatusEntrega;
   created_at: string;
 };
+
+export type Cartao = {
+  id: string;
+  nome: string;
+  dia_vencimento: number;
+};
+
+export type FaturaPaga = {
+  id: string;
+  cartao_id: string;
+  valor_total: number;
+  data_pagamento: string;
+};
+
+export type FormaPagamento = "pix" | "cartao";
+export type StatusCompra = "Pago" | "Na fatura";
+
+export type Compra = {
+  id: string;
+  fornecedor: string;
+  item: string | null;
+  valor: number;
+  forma_pagamento: FormaPagamento;
+  cartao_id: string | null;
+  status: StatusCompra;
+  data_compra: string | null;
+  competencia: string;
+  grupo_compra_id: string | null;
+  numero_parcela: number;
+  total_parcelas: number;
+  created_at: string;
+};
+
+export type ParametrosDivisao = {
+  id: number;
+  percentual_socia: number;
+};
