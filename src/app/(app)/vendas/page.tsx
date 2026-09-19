@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import NovaVendaForm from "./NovaVendaForm";
+import NovoOrcamentoForm from "./NovoOrcamentoForm";
 import VendasModule from "./VendasModule";
 import type { VendaComItens } from "./types";
 import type { CategoriaPreco, Cliente, Produto } from "@/lib/types";
@@ -43,7 +44,10 @@ export default async function VendasPage() {
       <div className="mb-8 flex items-center justify-between">
         <h1 className="font-display text-[32px] text-tinta">Vendas</h1>
         {podeVender && (
-          <NovaVendaForm clientes={clientes} produtos={produtos} categorias={categorias} />
+          <div className="flex gap-3">
+            <NovoOrcamentoForm clientes={clientes} produtos={produtos} categorias={categorias} />
+            <NovaVendaForm clientes={clientes} produtos={produtos} categorias={categorias} />
+          </div>
         )}
       </div>
       {!podeVender && (

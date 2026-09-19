@@ -52,7 +52,7 @@ export default function VendaFormModal({
   categorias,
   onFechar,
 }: {
-  modo: "criar" | "editar";
+  modo: "criar" | "editar" | "orcamento";
   vendaEditando?: VendaParaEditar | null;
   clientes: Cliente[];
   produtos: Produto[];
@@ -149,7 +149,6 @@ export default function VendaFormModal({
 
   async function salvar() {
     if (!podeSalvar) return;
-    setSalvando(true);
     setErro(null);
 
     const cliente = clientes.find((c) => c.id === clienteId)!;
@@ -159,6 +158,23 @@ export default function VendaFormModal({
         const produto = produtos.find((p) => p.id === i.produtoId);
         return { texto: `${i.quantidade} ${produto?.nome.toLowerCase() ?? "item"}`, valor: valorDoItem(i) };
       });
+
+    if (modo === "orcamento") {
+      setComprovante({
+        tipo: "orcamento",
+        cliente: cliente.nome,
+        telefone: cliente.telefone,
+        itens: itensDetalhe,
+        total: subtotal,
+        sinal: sinalEfetivo,
+        restante,
+        dataEntregaBR: formatDataBR(dataEntrega),
+      });
+      setEtapa("sucesso");
+      return;
+    }
+
+    setSalvando(true);
 
     const payload = {
       cliente_id: clienteId,
@@ -187,6 +203,7 @@ export default function VendaFormModal({
     }
 
     setComprovante({
+      tipo: "venda",
       cliente: cliente.nome,
       telefone: cliente.telefone,
       itens: itensDetalhe,
@@ -198,13 +215,16 @@ export default function VendaFormModal({
     setEtapa("sucesso");
   }
 
+  const nomeArquivo = modo === "orcamento" ? "orcamento-sal-e-mel.png" : "pedido-sal-e-mel.png";
+  const tituloCompartilhamento = modo === "orcamento" ? "Orçamento Sal e Mel" : "Pedido Sal e Mel";
+
   async function baixarComprovante() {
     const el = document.getElementById("comprovante-imagem");
     if (!el) return;
     const html2canvas = (await import("html2canvas")).default;
     const canvas = await html2canvas(el, { scale: 2, backgroundColor: "#ffffff" });
     const link = document.createElement("a");
-    link.download = "pedido-sal-e-mel.png";
+    link.download = nomeArquivo;
     link.href = canvas.toDataURL("image/png");
     link.click();
   }
@@ -216,23 +236,24 @@ export default function VendaFormModal({
     const canvas = await html2canvas(el, { scale: 2, backgroundColor: "#ffffff" });
     canvas.toBlob((blob) => {
       if (!blob) return;
-      const file = new File([blob], "pedido-sal-e-mel.png", { type: "image/png" });
+      const file = new File([blob], nomeArquivo, { type: "image/png" });
       const nav = navigator as Navigator & {
         canShare?: (data: { files: File[] }) => boolean;
         share?: (data: { files: File[]; title: string }) => Promise<void>;
       };
       if (nav.canShare?.({ files: [file] }) && nav.share) {
-        nav.share({ files: [file], title: "Pedido Sal e Mel" }).catch(() => {});
+        nav.share({ files: [file], title: tituloCompartilhamento }).catch(() => {});
       } else {
         const link = document.createElement("a");
-        link.download = "pedido-sal-e-mel.png";
+        link.download = nomeArquivo;
         link.href = URL.createObjectURL(blob);
         link.click();
       }
     });
   }
 
-  const titulo = modo === "editar" ? "Editar venda" : "Nova venda";
+  const titulo =
+    modo === "editar" ? "Editar venda" : modo === "orcamento" ? "Novo orçamento" : "Nova venda";
 
   return (
     <Modal open onClose={fechar} widthClass="max-w-lg" closeOnBackdropClick={false}>
@@ -336,7 +357,7 @@ export default function VendaFormModal({
             <Input type="date" value={dataEntrega} onChange={(e) => setDataEntrega(e.target.value)} />
           </Field>
 
-          <Field label="Sinal (recebido agora)">
+          <Field label={modo === "orcamento" ? "Sinal sugerido" : "Sinal (recebido agora)"}>
             <MoneyInput
               value={sinalEfetivo}
               onChange={(reais) => {
@@ -354,13 +375,21 @@ export default function VendaFormModal({
           {erro && <p className="font-ui text-[13px] font-semibold text-erro">{erro}</p>}
 
           <Button onClick={salvar} disabled={!podeSalvar} className="w-full">
-            {salvando ? "Salvando..." : modo === "editar" ? "Salvar alterações" : "Salvar venda"}
+            {salvando
+              ? "Salvando..."
+              : modo === "editar"
+                ? "Salvar alterações"
+                : modo === "orcamento"
+                  ? "Gerar orçamento"
+                  : "Salvar venda"}
           </Button>
         </div>
       ) : (
         comprovante && (
           <div className="flex flex-col gap-4">
-            <h3 className="font-display text-xl text-tinta">Venda registrada!</h3>
+            <h3 className="font-display text-xl text-tinta">
+              {modo === "orcamento" ? "Orçamento gerado!" : "Venda registrada!"}
+            </h3>
             <div id="comprovante-imagem">
               <Comprovante dados={comprovante} />
             </div>
