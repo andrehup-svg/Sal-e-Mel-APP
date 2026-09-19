@@ -4,7 +4,9 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { criarCategoria, editarCategoria, removerCategoria } from "./actions";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Input";
+import { MoneyInput } from "@/components/ui/MoneyInput";
 import { Card } from "@/components/ui/Card";
+import { sugerirPrecoUnidade } from "@/lib/precificacao";
 import type { CategoriaPreco } from "@/lib/types";
 
 function formatBRL(v: number) {
@@ -20,6 +22,12 @@ export default function CategoriasSection({
 }) {
   const [editando, setEditando] = useState<CategoriaPreco | null>(null);
   const [tipo, setTipo] = useState<"cento" | "unidade">("cento");
+  const [precoCento, setPrecoCento] = useState(0);
+  const [precoUnidade, setPrecoUnidade] = useState(0);
+  const [precoUnidadeManual, setPrecoUnidadeManual] = useState(false);
+  const [temAtacado, setTemAtacado] = useState(false);
+  const [precoAtacado, setPrecoAtacado] = useState(0);
+  const [qtdMinAtacado, setQtdMinAtacado] = useState("");
   const [formKey, setFormKey] = useState(0);
 
   const action = editando ? editarCategoria : criarCategoria;
@@ -30,6 +38,12 @@ export default function CategoriasSection({
     if (eraPending.current && !pending && !state.error) {
       setEditando(null);
       setTipo("cento");
+      setPrecoCento(0);
+      setPrecoUnidade(0);
+      setPrecoUnidadeManual(false);
+      setTemAtacado(false);
+      setPrecoAtacado(0);
+      setQtdMinAtacado("");
       setFormKey((k) => k + 1);
     }
     eraPending.current = pending;
@@ -38,11 +52,30 @@ export default function CategoriasSection({
   function iniciarEdicao(cat: CategoriaPreco) {
     setEditando(cat);
     setTipo(cat.tipo);
+    setPrecoCento(cat.preco_cento ?? 0);
+    setPrecoUnidade(cat.preco_unidade);
+    setPrecoUnidadeManual(true);
+    setTemAtacado(cat.preco_unidade_atacado !== null);
+    setPrecoAtacado(cat.preco_unidade_atacado ?? 0);
+    setQtdMinAtacado(cat.quantidade_minima_atacado !== null ? String(cat.quantidade_minima_atacado) : "");
   }
 
   function cancelarEdicao() {
     setEditando(null);
     setTipo("cento");
+    setPrecoCento(0);
+    setPrecoUnidade(0);
+    setPrecoUnidadeManual(false);
+    setTemAtacado(false);
+    setPrecoAtacado(0);
+    setQtdMinAtacado("");
+  }
+
+  function mudarPrecoCento(valor: number) {
+    setPrecoCento(valor);
+    if (!precoUnidadeManual) {
+      setPrecoUnidade(valor > 0 ? sugerirPrecoUnidade(valor) : 0);
+    }
   }
 
   return (
@@ -67,16 +100,83 @@ export default function CategoriasSection({
             <Select
               name="tipo"
               value={tipo}
-              onChange={(e) => setTipo(e.target.value as "cento" | "unidade")}
+              onChange={(e) => {
+                const novoTipo = e.target.value as "cento" | "unidade";
+                setTipo(novoTipo);
+                if (novoTipo === "unidade") {
+                  setPrecoCento(0);
+                  setPrecoUnidadeManual(true);
+                } else {
+                  setPrecoUnidadeManual(false);
+                  mudarPrecoCento(precoCento);
+                }
+              }}
             >
               <option value="cento">Por cento (100 unidades)</option>
-              <option value="unidade">Por unidade</option>
+              <option value="unidade">Por unidade (sob encomenda)</option>
             </Select>
           </Field>
 
-          <Field label={tipo === "cento" ? "Preço por 100 unidades (R$)" : "Preço por unidade (R$)"}>
-            <Input name="preco" type="number" min="0" step="0.01" defaultValue={editando?.preco ?? ""} />
+          {tipo === "cento" && (
+            <Field label="Preço por 100 unidades (R$)">
+              <MoneyInput value={precoCento} onChange={mudarPrecoCento} />
+              <input type="hidden" name="preco_cento" value={precoCento} />
+            </Field>
+          )}
+
+          <Field
+            label={
+              tipo === "cento" ? "Preço por unidade avulsa (R$)" : "Preço por unidade (R$)"
+            }
+          >
+            <MoneyInput
+              value={precoUnidade}
+              onChange={(valor) => {
+                setPrecoUnidade(valor);
+                setPrecoUnidadeManual(true);
+              }}
+            />
+            <input type="hidden" name="preco_unidade" value={precoUnidade} />
           </Field>
+          {tipo === "cento" && !precoUnidadeManual && precoCento > 0 && (
+            <p className="-mt-2 font-ui text-[12px] text-texto-suave">
+              Sugerido automaticamente: cento ÷ 100 + R$ 0,10. Edite se quiser um valor diferente.
+            </p>
+          )}
+
+          <label className="flex items-center gap-2 font-ui text-sm text-tinta">
+            <input
+              type="checkbox"
+              checked={temAtacado}
+              onChange={(e) => {
+                setTemAtacado(e.target.checked);
+                if (!e.target.checked) {
+                  setPrecoAtacado(0);
+                  setQtdMinAtacado("");
+                }
+              }}
+            />
+            Tem preço de atacado por quantidade (ex: Morango Cravejado)
+          </label>
+
+          {temAtacado && (
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Preço de atacado (R$)">
+                <MoneyInput value={precoAtacado} onChange={setPrecoAtacado} />
+                <input type="hidden" name="preco_unidade_atacado" value={precoAtacado} />
+              </Field>
+              <Field label="Acima de quantas unidades">
+                <Input
+                  name="quantidade_minima_atacado"
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={qtdMinAtacado}
+                  onChange={(e) => setQtdMinAtacado(e.target.value)}
+                />
+              </Field>
+            </div>
+          )}
 
           {state.error && <p className="font-ui text-[13px] font-semibold text-erro">{state.error}</p>}
 
@@ -130,7 +230,12 @@ function CategoriaRow({
         <div>
           <p className="font-ui text-[15px] font-bold text-tinta">{categoria.nome}</p>
           <p className="font-ui text-[13px] text-texto-suave">
-            {formatBRL(categoria.preco)} {categoria.tipo === "cento" ? "/cento" : "/unidade"}
+            {categoria.tipo === "cento"
+              ? `${formatBRL(categoria.preco_cento ?? 0)} /cento · ${formatBRL(categoria.preco_unidade)} /un avulsa`
+              : `${formatBRL(categoria.preco_unidade)} /unidade`}
+            {categoria.preco_unidade_atacado !== null && categoria.quantidade_minima_atacado !== null && (
+              <> · {formatBRL(categoria.preco_unidade_atacado)} /un acima de {categoria.quantidade_minima_atacado}un</>
+            )}
           </p>
         </div>
         <div className="flex gap-2">

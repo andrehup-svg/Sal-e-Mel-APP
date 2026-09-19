@@ -12,11 +12,26 @@ function parseTipo(formData: FormData): TipoPrecificacao {
   return formData.get("tipo") === "unidade" ? "unidade" : "cento";
 }
 
-function parsePreco(formData: FormData): number | null {
-  const raw = formData.get("preco");
+function parseValor(formData: FormData, campo: string): number | null {
+  const raw = formData.get(campo);
   if (typeof raw !== "string" || raw.trim() === "") return null;
   const value = Number(raw);
   return Number.isFinite(value) ? value : null;
+}
+
+function parseAtacado(
+  formData: FormData,
+): { error: string } | { error: null; precoAtacado: number | null; quantidadeMinima: number | null } {
+  const precoAtacado = parseValor(formData, "preco_unidade_atacado");
+  const quantidadeMinima = parseValor(formData, "quantidade_minima_atacado");
+
+  if (precoAtacado === null && quantidadeMinima === null) {
+    return { error: null, precoAtacado: null, quantidadeMinima: null };
+  }
+  if (precoAtacado === null || precoAtacado <= 0 || quantidadeMinima === null || quantidadeMinima <= 0) {
+    return { error: "Preencha os dois campos de atacado (preço e quantidade), ou deixe os dois em branco." };
+  }
+  return { error: null, precoAtacado, quantidadeMinima };
 }
 
 export async function criarCategoria(
@@ -25,13 +40,28 @@ export async function criarCategoria(
 ): Promise<ActionState> {
   const nome = String(formData.get("nome") ?? "").trim();
   const tipo = parseTipo(formData);
-  const preco = parsePreco(formData);
+  const precoCento = parseValor(formData, "preco_cento");
+  const precoUnidade = parseValor(formData, "preco_unidade");
 
   if (!nome) return { error: "Informe o nome da categoria." };
-  if (preco === null || preco <= 0) return { error: "Informe o preço da categoria." };
+  if (tipo === "cento" && (precoCento === null || precoCento <= 0)) {
+    return { error: "Informe o preço por cento da categoria." };
+  }
+  if (precoUnidade === null || precoUnidade <= 0) {
+    return { error: "Informe o preço por unidade da categoria." };
+  }
+  const atacado = parseAtacado(formData);
+  if (atacado.error !== null) return { error: atacado.error };
 
   const supabase = await createClient();
-  const { error } = await supabase.from("categorias_preco").insert({ nome, tipo, preco });
+  const { error } = await supabase.from("categorias_preco").insert({
+    nome,
+    tipo,
+    preco_cento: tipo === "cento" ? precoCento : null,
+    preco_unidade: precoUnidade,
+    preco_unidade_atacado: atacado.precoAtacado,
+    quantidade_minima_atacado: atacado.quantidadeMinima,
+  });
 
   if (error) return { error: error.message };
 
@@ -46,16 +76,31 @@ export async function editarCategoria(
   const id = String(formData.get("id") ?? "");
   const nome = String(formData.get("nome") ?? "").trim();
   const tipo = parseTipo(formData);
-  const preco = parsePreco(formData);
+  const precoCento = parseValor(formData, "preco_cento");
+  const precoUnidade = parseValor(formData, "preco_unidade");
 
   if (!id) return { error: "Categoria inválida." };
   if (!nome) return { error: "Informe o nome da categoria." };
-  if (preco === null || preco <= 0) return { error: "Informe o preço da categoria." };
+  if (tipo === "cento" && (precoCento === null || precoCento <= 0)) {
+    return { error: "Informe o preço por cento da categoria." };
+  }
+  if (precoUnidade === null || precoUnidade <= 0) {
+    return { error: "Informe o preço por unidade da categoria." };
+  }
+  const atacado = parseAtacado(formData);
+  if (atacado.error !== null) return { error: atacado.error };
 
   const supabase = await createClient();
   const { error } = await supabase
     .from("categorias_preco")
-    .update({ nome, tipo, preco })
+    .update({
+      nome,
+      tipo,
+      preco_cento: tipo === "cento" ? precoCento : null,
+      preco_unidade: precoUnidade,
+      preco_unidade_atacado: atacado.precoAtacado,
+      quantidade_minima_atacado: atacado.quantidadeMinima,
+    })
     .eq("id", id);
 
   if (error) return { error: error.message };

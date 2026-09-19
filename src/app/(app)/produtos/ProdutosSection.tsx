@@ -15,14 +15,14 @@ function precoLabel(produto: Produto, categorias: CategoriaPreco[]) {
   const cat = categorias.find((c) => c.id === produto.categoria_id);
   if (!cat) return "—";
   return cat.tipo === "cento"
-    ? `${formatBRL(cat.preco)} /cento · ${cat.nome}`
-    : `${formatBRL(cat.preco)} /un · ${cat.nome}`;
+    ? `${formatBRL(cat.preco_cento ?? 0)} /cento · ${formatBRL(cat.preco_unidade)} /un avulsa · ${cat.nome}`
+    : `${formatBRL(cat.preco_unidade)} /un · ${cat.nome}`;
 }
 
 function categoriaOptionLabel(cat: CategoriaPreco) {
   return cat.tipo === "cento"
-    ? `${cat.nome} — ${formatBRL(cat.preco)} /cento`
-    : `${cat.nome} — ${formatBRL(cat.preco)} /un`;
+    ? `${cat.nome} — ${formatBRL(cat.preco_cento ?? 0)} /cento`
+    : `${cat.nome} — ${formatBRL(cat.preco_unidade)} /un`;
 }
 
 export default function ProdutosSection({

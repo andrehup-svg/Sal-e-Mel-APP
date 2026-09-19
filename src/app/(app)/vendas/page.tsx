@@ -16,7 +16,7 @@ export default async function VendasPage() {
     supabase
       .from("vendas")
       .select(
-        "id, data_entrega, valor_total, sinal, restante, status_pagamento, status_entrega, created_at, clientes(nome), venda_itens(quantidade, produtos(nome))",
+        "id, cliente_id, data_entrega, valor_total, sinal, restante, status_pagamento, status_entrega, created_at, clientes(nome, telefone), venda_itens(produto_id, quantidade, modo_preco, produtos(nome))",
       )
       .order("created_at", { ascending: false }),
     supabase.from("clientes").select("*").order("nome"),
@@ -65,7 +65,14 @@ export default async function VendasPage() {
           </p>
         </div>
       )}
-      <VendasModule vendas={vendas} recebidoMes={recebidoMes} previstoMes={previstoMes} />
+      <VendasModule
+        vendas={vendas}
+        recebidoMes={recebidoMes}
+        previstoMes={previstoMes}
+        clientes={clientes}
+        produtos={produtos}
+        categorias={categorias}
+      />
     </div>
   );
 }

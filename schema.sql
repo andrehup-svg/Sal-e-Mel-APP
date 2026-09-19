@@ -20,8 +20,18 @@ create table categorias_preco (
   id uuid primary key default gen_random_uuid(),
   nome text not null,
   tipo text not null check (tipo in ('cento','unidade')),
-  preco numeric(10,2) not null, -- preço por 100 unidades (tipo 'cento') ou por unidade (tipo 'unidade')
-  created_at timestamptz not null default now()
+  preco_cento numeric(10,2), -- preço por 100 unidades — obrigatório quando tipo = 'cento', null quando 'unidade'
+  preco_unidade numeric(10,2) not null, -- preço por unidade avulsa — sempre presente (tipo 'cento': cento/100 + R$0,10 por padrão; tipo 'unidade': é o único preço)
+  preco_unidade_atacado numeric(10,2), -- opcional: preço por unidade quando a quantidade vendida > quantidade_minima_atacado (ex: Morango Cravejado)
+  quantidade_minima_atacado numeric(10,2), -- opcional: quantidade a partir da qual (exclusive) vale o preco_unidade_atacado
+  created_at timestamptz not null default now(),
+  constraint categoria_preco_coerente check (
+    (tipo = 'cento' and preco_cento is not null) or (tipo = 'unidade' and preco_cento is null)
+  ),
+  constraint categoria_atacado_coerente check (
+    (preco_unidade_atacado is null and quantidade_minima_atacado is null) or
+    (preco_unidade_atacado is not null and quantidade_minima_atacado is not null)
+  )
 );
 
 -- ---------- Produtos ----------
@@ -52,7 +62,8 @@ create table venda_itens (
   venda_id uuid not null references vendas(id) on delete cascade,
   produto_id uuid not null references produtos(id) on delete restrict,
   quantidade numeric(10,2) not null,
-  valor_item numeric(10,2) not null -- calculado no momento da venda (snapshot do preço)
+  valor_item numeric(10,2) not null, -- calculado no momento da venda (snapshot do preço)
+  modo_preco text not null default 'cento' check (modo_preco in ('cento','unidade')) -- qual preço da categoria foi usado neste item
 );
 
 -- ---------- Cartões de crédito ----------
@@ -234,3 +245,138 @@ end $$;
 
 -- ---------- Renomeia o cartão seed de "Nubank" pra "Cartão" (rodar 1x) ----------
 update cartoes set nome = 'Cartão' where nome = 'Nubank';
+
+-- ============================================================
+-- Migração: preço duplo por categoria (cento + unidade avulsa)
+-- Toda categoria passa a guardar dois preços: preco_cento (pro-rata,
+-- por 100 unidades) e preco_unidade (venda avulsa, sempre R$0,10 a
+-- mais por unidade do que o pro-rata do cento). Categorias tipo
+-- 'unidade' (itens sob encomenda) só usam preco_unidade — preco_cento
+-- fica null nelas. Rode este bloco no SQL Editor do Supabase se o
+-- banco já existia antes desta mudança (é seguro repetir).
+-- ============================================================
+alter table categorias_preco add column if not exists preco_cento numeric(10,2);
+alter table categorias_preco add column if not exists preco_unidade numeric(10,2);
+
+update categorias_preco set preco_cento = preco, preco_unidade = round(preco / 100 + 0.10, 2)
+where tipo = 'cento' and preco_unidade is null;
+
+update categorias_preco set preco_unidade = preco, preco_cento = null
+where tipo = 'unidade' and preco_unidade is null;
+
+alter table categorias_preco drop column if exists preco;
+alter table categorias_preco alter column preco_unidade set not null;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'categoria_preco_coerente'
+  ) then
+    alter table categorias_preco add constraint categoria_preco_coerente check (
+      (tipo = 'cento' and preco_cento is not null) or (tipo = 'unidade' and preco_cento is null)
+    );
+  end if;
+end $$;
+
+alter table venda_itens add column if not exists modo_preco text not null default 'cento';
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'venda_itens_modo_preco_check'
+  ) then
+    alter table venda_itens add constraint venda_itens_modo_preco_check check (modo_preco in ('cento','unidade'));
+  end if;
+end $$;
+
+-- ============================================================
+-- Seed: categorias e produtos do cardápio de docinhos
+-- Rode uma única vez (não é idempotente — evite rodar 2x sem
+-- limpar antes, senão duplica categorias/produtos).
+-- ============================================================
+insert into categorias_preco (nome, tipo, preco_cento, preco_unidade) values
+  ('Docinhos Tradicionais', 'cento', 110.00, 1.20),
+  ('Docinhos Gourmet', 'cento', 130.00, 1.40),
+  ('Gourmet Especial', 'cento', 130.00, 1.40),
+  ('Gourmet Especial I', 'cento', 150.00, 1.60),
+  ('Gourmet Especial II', 'cento', 180.00, 1.90),
+  ('Gourmet Especial III', 'cento', 300.00, 3.10);
+
+insert into categorias_preco (nome, tipo, preco_cento, preco_unidade) values
+  ('Docinhos Especiais Personalizados', 'unidade', null, 200.00);
+
+insert into produtos (nome, categoria_id)
+select v.nome, cp.id
+from (values
+  ('Brigadeiro', 'Docinhos Tradicionais'),
+  ('Beijinho', 'Docinhos Tradicionais'),
+  ('Dois Amores', 'Docinhos Tradicionais'),
+  ('Cajuzinho', 'Docinhos Tradicionais'),
+
+  ('Leite Ninho', 'Docinhos Gourmet'),
+  ('Confete', 'Docinhos Gourmet'),
+  ('Churros', 'Docinhos Gourmet'),
+  ('Coco Queimado', 'Docinhos Gourmet'),
+  ('Pão de Mel', 'Docinhos Gourmet'),
+  ('Caramelo Salgado', 'Docinhos Gourmet'),
+
+  ('Surpresa de Uva', 'Gourmet Especial'),
+  ('Moranguinho', 'Gourmet Especial'),
+  ('Floresta Negra', 'Gourmet Especial'),
+  ('Snickers', 'Gourmet Especial'),
+  ('Banoffee', 'Gourmet Especial'),
+
+  ('Leite Ninho com Nutella', 'Gourmet Especial I'),
+  ('Capuccino', 'Gourmet Especial I'),
+  ('Rafaello', 'Gourmet Especial I'),
+  ('Kinder', 'Gourmet Especial I'),
+  ('Nozes', 'Gourmet Especial I'),
+  ('Pudim', 'Gourmet Especial I'),
+  ('Ferrero Rocher', 'Gourmet Especial I'),
+  ('Oreo', 'Gourmet Especial I'),
+  ('Romeu e Julieta', 'Gourmet Especial I'),
+  ('Ovomaltine', 'Gourmet Especial I'),
+
+  ('Pistache', 'Gourmet Especial II'),
+  ('Brulee', 'Gourmet Especial II'),
+  ('Red Velvet', 'Gourmet Especial II'),
+  ('Panetone', 'Gourmet Especial II'),
+  ('Brigadeiro Alcoólico', 'Gourmet Especial II'),
+
+  ('Coxinha de Morango', 'Gourmet Especial III'),
+  ('Camafeu de Nozes', 'Gourmet Especial III'),
+
+  ('Feliz Aniversário (personalizado)', 'Docinhos Especiais Personalizados')
+) as v(nome, categoria_nome)
+join categorias_preco cp on cp.nome = v.categoria_nome;
+
+-- ============================================================
+-- Migração: preço de atacado por quantidade (unidade)
+-- Adiciona um preço de unidade alternativo, mais barato, que passa
+-- a valer quando a quantidade vendida é MAIOR que um mínimo — para
+-- todas as unidades do item, não só o excedente. Ex: Morango
+-- Cravejado a R$13 a unidade, R$10 a unidade acima de 5 unidades.
+-- Rode este bloco no SQL Editor do Supabase se o banco já existia
+-- antes desta mudança (é seguro repetir).
+-- ============================================================
+alter table categorias_preco add column if not exists preco_unidade_atacado numeric(10,2);
+alter table categorias_preco add column if not exists quantidade_minima_atacado numeric(10,2);
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'categoria_atacado_coerente'
+  ) then
+    alter table categorias_preco add constraint categoria_atacado_coerente check (
+      (preco_unidade_atacado is null and quantidade_minima_atacado is null) or
+      (preco_unidade_atacado is not null and quantidade_minima_atacado is not null)
+    );
+  end if;
+end $$;
+
+-- ---------- Seed: Morango Cravejado ----------
+insert into categorias_preco (nome, tipo, preco_cento, preco_unidade, preco_unidade_atacado, quantidade_minima_atacado)
+values ('Morango Cravejado', 'unidade', null, 13.00, 10.00, 5);
+
+insert into produtos (nome, categoria_id)
+values ('Morango Cravejado', (select id from categorias_preco where nome = 'Morango Cravejado'));

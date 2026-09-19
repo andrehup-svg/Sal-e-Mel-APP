@@ -4,7 +4,10 @@ export type CategoriaPreco = {
   id: string;
   nome: string;
   tipo: TipoPrecificacao;
-  preco: number;
+  preco_cento: number | null;
+  preco_unidade: number;
+  preco_unidade_atacado: number | null;
+  quantidade_minima_atacado: number | null;
   created_at: string;
 };
 
