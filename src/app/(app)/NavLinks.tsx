@@ -7,6 +7,7 @@ import { Drawer } from "@/components/ui/Drawer";
 
 const LINKS = [
   { href: "/vendas", label: "Vendas" },
+  { href: "/agenda", label: "Agenda" },
   { href: "/compras", label: "Compras" },
   { href: "/produtos", label: "Produtos" },
   { href: "/clientes", label: "Clientes" },

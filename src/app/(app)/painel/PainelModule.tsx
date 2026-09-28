@@ -27,6 +27,9 @@ export default function PainelModule({
   parteSocia,
   vendasMes,
   comprasMes,
+  saldoAtual,
+  saldoPrevistoFimMes,
+  fimMesBR,
   proximasEntregas,
 }: {
   mesLabel: string;
@@ -35,6 +38,9 @@ export default function PainelModule({
   parteSocia: number;
   vendasMes: number;
   comprasMes: number;
+  saldoAtual: number;
+  saldoPrevistoFimMes: number;
+  fimMesBR: string;
   proximasEntregas: VendaComItens[];
 }) {
   return (
@@ -69,9 +75,30 @@ export default function PainelModule({
         </Card>
       </div>
 
-      <h2 className="mb-3 font-ui text-sm font-extrabold text-texto-suave uppercase tracking-wide">
-        Próximas entregas
-      </h2>
+      <div className="mb-6 grid grid-cols-2 gap-4">
+        <Card>
+          <div className="font-ui text-xs font-bold uppercase tracking-wide text-texto-suave">
+            Saldo atual
+          </div>
+          <div className="font-display text-2xl text-tinta">{formatBRL(saldoAtual)}</div>
+        </Card>
+        <Card>
+          <div className="font-ui text-xs font-bold uppercase tracking-wide text-texto-suave">
+            Saldo previsto
+          </div>
+          <div className="font-display text-2xl text-tinta">{formatBRL(saldoPrevistoFimMes)}</div>
+          <div className="font-ui text-sm text-texto-medio">até {fimMesBR}</div>
+        </Card>
+      </div>
+
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="font-ui text-sm font-extrabold text-texto-suave uppercase tracking-wide">
+          Próximas entregas
+        </h2>
+        <Link href="/agenda" className="font-ui text-xs font-bold text-mel-700 underline">
+          Ver agenda
+        </Link>
+      </div>
       <div className="mb-8 flex flex-col gap-3">
         {proximasEntregas.length === 0 && (
           <p className="font-ui text-sm text-texto-medio">Nenhuma entrega agendada.</p>
@@ -101,6 +128,7 @@ export default function PainelModule({
       </div>
 
       <div className="flex flex-col gap-3">
+        <ShortcutCard href="/agenda" label="Ver agenda de entregas" letra="A" />
         <ShortcutCard href="/produtos" label="Gerenciar produtos" letra="P" />
         <ShortcutCard href="/clientes" label="Gerenciar clientes" letra="C" />
       </div>
