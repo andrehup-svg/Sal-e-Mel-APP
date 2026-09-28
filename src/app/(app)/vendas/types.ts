@@ -4,6 +4,8 @@ export type VendaItemComProduto = {
   produto_id: string;
   quantidade: number;
   modo_preco: TipoPrecificacao;
+  valor_item: number;
+  valor_manual: boolean;
   produtos: { nome: string } | null;
 };
 

@@ -380,3 +380,14 @@ values ('Morango Cravejado', 'unidade', null, 13.00, 10.00, 5);
 
 insert into produtos (nome, categoria_id)
 values ('Morango Cravejado', (select id from categorias_preco where nome = 'Morango Cravejado'));
+
+-- ============================================================
+-- Migração: valor manual por item de venda
+-- Permite sobrescrever o valor calculado de um item (preço combinado
+-- com o cliente antes de um reajuste de categoria, desconto pontual,
+-- etc.) sem perder esse valor quando a venda for editada depois —
+-- editarVenda só recalcula pela categoria os itens com valor_manual
+-- = false. Rode este bloco no SQL Editor do Supabase se o banco já
+-- existia antes desta mudança (é seguro repetir).
+-- ============================================================
+alter table venda_itens add column if not exists valor_manual boolean not null default false;

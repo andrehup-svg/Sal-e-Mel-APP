@@ -13,6 +13,10 @@ function formatBRL(v: number) {
   return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
+function formatDataVenda(isoTimestamp: string) {
+  return new Date(isoTimestamp).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+}
+
 function itensResumo(venda: VendaComItens) {
   if (venda.venda_itens.length === 0) return "Sem itens";
   return venda.venda_itens
@@ -87,6 +91,9 @@ export default function VendasModule({
                 <p className="truncate font-ui text-[13px] text-texto-suave">{itensResumo(venda)}</p>
               </div>
               <div className="shrink-0 text-right">
+                <p className="font-ui text-[11px] font-semibold text-texto-suave">
+                  {formatDataVenda(venda.created_at)}
+                </p>
                 <p className="font-ui text-[15px] font-bold text-tinta">
                   {formatBRL(venda.valor_total)}
                 </p>
@@ -126,6 +133,8 @@ export default function VendasModule({
               produto_id: i.produto_id,
               quantidade: i.quantidade,
               modo: i.modo_preco,
+              valor: i.valor_item,
+              valorManual: i.valor_manual,
             })),
           }}
           clientes={clientes}

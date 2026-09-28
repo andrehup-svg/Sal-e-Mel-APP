@@ -17,7 +17,7 @@ export default async function VendasPage() {
     supabase
       .from("vendas")
       .select(
-        "id, cliente_id, data_entrega, valor_total, sinal, restante, status_pagamento, status_entrega, created_at, clientes(nome, telefone), venda_itens(produto_id, quantidade, modo_preco, produtos(nome))",
+        "id, cliente_id, data_entrega, valor_total, sinal, restante, status_pagamento, status_entrega, created_at, clientes(nome, telefone), venda_itens(produto_id, quantidade, modo_preco, valor_item, valor_manual, produtos(nome))",
       )
       .order("created_at", { ascending: false }),
     supabase.from("clientes").select("*").order("nome"),

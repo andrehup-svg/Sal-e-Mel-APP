@@ -30,18 +30,31 @@ function tipoLabel(tipo: CategoriaPreco["tipo"] | undefined) {
 
 let proximoItemId = 1;
 
-type ItemForm = { itemId: number; produtoId: string; quantidade: number; modo: TipoPrecificacao };
+type ItemForm = {
+  itemId: number;
+  produtoId: string;
+  quantidade: number;
+  modo: TipoPrecificacao;
+  valor: number;
+  valorManual: boolean;
+};
 
 export type VendaParaEditar = {
   id: string;
   cliente_id: string;
   data_entrega: string | null;
   sinal: number;
-  itens: { produto_id: string; quantidade: number; modo: TipoPrecificacao }[];
+  itens: {
+    produto_id: string;
+    quantidade: number;
+    modo: TipoPrecificacao;
+    valor: number;
+    valorManual: boolean;
+  }[];
 };
 
 function itemFormVazio(): ItemForm {
-  return { itemId: proximoItemId++, produtoId: "", quantidade: 25, modo: "cento" };
+  return { itemId: proximoItemId++, produtoId: "", quantidade: 25, modo: "cento", valor: 0, valorManual: false };
 }
 
 export default function VendaFormModal({
@@ -80,6 +93,8 @@ export default function VendaFormModal({
         produtoId: i.produto_id,
         quantidade: i.quantidade,
         modo: i.modo,
+        valor: i.valor,
+        valorManual: i.valorManual,
       }));
     }
     return [itemFormVazio()];
@@ -104,6 +119,7 @@ export default function VendaFormModal({
   }, [produtos, categorias]);
 
   function valorDoItem(item: ItemForm) {
+    if (item.valorManual) return item.valor;
     const cat = categoriaPorProduto.get(item.produtoId);
     if (!cat) return 0;
     const itemModo: TipoPrecificacao = cat.tipo === "unidade" ? "unidade" : item.modo;
@@ -180,7 +196,13 @@ export default function VendaFormModal({
       cliente_id: clienteId,
       data_entrega: dataEntrega || null,
       sinal: sinalEfetivo,
-      itens: itens.map((i) => ({ produto_id: i.produtoId, quantidade: i.quantidade, modo: i.modo })),
+      itens: itens.map((i) => ({
+        produto_id: i.produtoId,
+        quantidade: i.quantidade,
+        modo: i.modo,
+        valor: valorDoItem(i),
+        valorManual: i.valorManual,
+      })),
     };
 
     const resultado =
@@ -329,10 +351,13 @@ export default function VendaFormModal({
                   atualizarItem(item.itemId, {
                     produtoId,
                     modo: cat && cat.tipo === "unidade" ? "unidade" : "cento",
+                    valorManual: false,
                   });
                 }}
                 onMudarQuantidade={(quantidade) => atualizarItem(item.itemId, { quantidade })}
                 onMudarModo={(itemModo) => atualizarItem(item.itemId, { modo: itemModo })}
+                onMudarValor={(valor) => atualizarItem(item.itemId, { valor, valorManual: true })}
+                onRestaurarValor={() => atualizarItem(item.itemId, { valorManual: false })}
                 onRemover={() => removerItem(item.itemId)}
               />
             ))}
@@ -425,6 +450,8 @@ function ItemRow({
   onMudarProduto,
   onMudarQuantidade,
   onMudarModo,
+  onMudarValor,
+  onRestaurarValor,
   onRemover,
 }: {
   item: ItemForm;
@@ -434,6 +461,8 @@ function ItemRow({
   onMudarProduto: (produtoId: string) => void;
   onMudarQuantidade: (quantidade: number) => void;
   onMudarModo: (modo: TipoPrecificacao) => void;
+  onMudarValor: (valor: number) => void;
+  onRestaurarValor: () => void;
   onRemover: () => void;
 }) {
   const categoriaAtual = categoriaPorProduto.get(item.produtoId);
@@ -589,6 +618,21 @@ function ItemRow({
         </div>
       )}
       <div className="flex items-center justify-between gap-2">
+        <span className="font-ui text-xs text-texto-suave">Valor do item</span>
+        {item.valorManual && (
+          <button
+            type="button"
+            onClick={onRestaurarValor}
+            className="font-ui text-xs text-texto-suave underline hover:text-cacau-600"
+          >
+            usar preço da categoria
+          </button>
+        )}
+        <div className="w-32">
+          <MoneyInput value={valor} onChange={onMudarValor} className="py-1.5 text-sm" />
+        </div>
+      </div>
+      <div className="flex items-center justify-between gap-2">
         <button
           type="button"
           onClick={onRemover}
@@ -599,7 +643,9 @@ function ItemRow({
           </span>
           Remover item
         </button>
-        <span className="font-ui text-sm font-bold text-tinta">{formatBRLCents(valor)}</span>
+        {item.valorManual && (
+          <span className="font-ui text-[11px] font-semibold text-mel-700">valor manual</span>
+        )}
       </div>
     </div>
   );

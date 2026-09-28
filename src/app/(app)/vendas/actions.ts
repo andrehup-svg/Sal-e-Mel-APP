@@ -5,7 +5,13 @@ import { createClient } from "@/lib/supabase/server";
 import { calcularValorItem } from "@/lib/precificacao";
 import type { CategoriaPreco, TipoPrecificacao } from "@/lib/types";
 
-export type ItemInput = { produto_id: string; quantidade: number; modo: TipoPrecificacao };
+export type ItemInput = {
+  produto_id: string;
+  quantidade: number;
+  modo: TipoPrecificacao;
+  valor: number;
+  valorManual: boolean;
+};
 
 export type CriarVendaInput = {
   cliente_id: string;
@@ -23,6 +29,7 @@ type ItemCalculado = {
   quantidade: number;
   valor_item: number;
   modo_preco: TipoPrecificacao;
+  valor_manual: boolean;
 };
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;
@@ -51,13 +58,17 @@ async function calcularItensVenda(
     const categoria = produto?.categorias_preco as unknown as CategoriaPreco | null;
     if (!produto || !categoria) return { error: "Produto inválido." };
     const modo: TipoPrecificacao = categoria.tipo === "unidade" ? "unidade" : item.modo;
-    const valorItem = calcularValorItem(categoria, item.quantidade, modo);
+    const valorManual = item.valorManual === true;
+    const valorItem = valorManual
+      ? Math.max(0, item.valor)
+      : calcularValorItem(categoria, item.quantidade, modo);
     valorTotal += valorItem;
     itensCalculados.push({
       produto_id: item.produto_id,
       quantidade: item.quantidade,
       valor_item: valorItem,
       modo_preco: modo,
+      valor_manual: valorManual,
     });
   }
 
@@ -216,6 +227,41 @@ export async function excluirVenda(vendaId: string): Promise<{ error: string | n
   revalidatePath("/vendas");
   revalidatePath("/produtos");
   revalidatePath("/clientes");
+
+  return { error: null };
+}
+
+// Sinal e restante são as duas únicas "fatias" de pagamento que o schema
+// guarda — não existe um registro de pagamentos parciais além disso. Então
+// "recebi o restante" só pode ser expresso subindo o sinal até cobrir o
+// valor total (restante = 0), que por sua vez já vira status_pagamento
+// 'Pago' pela mesma regra usada em criarVenda/editarVenda.
+export async function confirmarRecebimentoRestante(
+  vendaId: string,
+): Promise<{ error: string | null }> {
+  if (!vendaId) return { error: "Venda inválida." };
+
+  const supabase = await createClient();
+
+  const { data: venda, error: buscaError } = await supabase
+    .from("vendas")
+    .select("valor_total")
+    .eq("id", vendaId)
+    .single();
+
+  if (buscaError || !venda) return { error: buscaError?.message ?? "Venda não encontrada." };
+
+  const { error } = await supabase
+    .from("vendas")
+    .update({ sinal: venda.valor_total, restante: 0, status_pagamento: "Pago" })
+    .eq("id", vendaId);
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/vendas");
+  revalidatePath("/agenda");
+  revalidatePath("/painel");
+  revalidatePath("/compras");
 
   return { error: null };
 }
