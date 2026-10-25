@@ -1,23 +1,17 @@
 import { createClient } from "@/lib/supabase/server";
 import PainelModule from "./PainelModule";
 import { formatDataBR } from "@/lib/faturas";
-import type { Compra, ParametrosDivisao, Venda } from "@/lib/types";
+import type { Compra, DivisaoStatusMensal, ParametrosDivisao, Venda } from "@/lib/types";
+import {
+  dividirLucro,
+  hojeISOBrasil,
+  mesReferencia,
+  nomeMes,
+  percentualDoMes,
+  somaComprasDoMes,
+  somaVendasDoMes,
+} from "@/lib/lucro";
 import type { VendaComItens } from "../vendas/types";
-
-const MESES = [
-  "Janeiro",
-  "Fevereiro",
-  "Março",
-  "Abril",
-  "Maio",
-  "Junho",
-  "Julho",
-  "Agosto",
-  "Setembro",
-  "Outubro",
-  "Novembro",
-  "Dezembro",
-];
 
 function toISODate(d: Date) {
   return d.toISOString().slice(0, 10);
@@ -27,24 +21,25 @@ export default async function PainelPage() {
   const supabase = await createClient();
 
   const hoje = new Date();
-  const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-  const inicioProximoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 1);
   const hojeISO = toISODate(hoje);
 
   const fimMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
   const fimMesISO = toISODate(fimMes);
 
-  const [vendasRes, comprasRes, comprasPixRes, parametrosRes, entregasRes] = await Promise.all([
+  const mesAtual = mesReferencia(hojeISOBrasil());
+
+  const [vendasRes, comprasRes, comprasPagasRes, parametrosRes, statusMesRes, entregasRes] = await Promise.all([
     supabase
       .from("vendas")
       .select("id, valor_total, sinal, restante, status_pagamento, data_entrega, created_at"),
     supabase
       .from("compras")
       .select("id, valor, data_compra")
-      .gte("data_compra", toISODate(inicioMes))
-      .lt("data_compra", toISODate(inicioProximoMes)),
-    supabase.from("compras").select("valor").eq("forma_pagamento", "pix"),
+      .gte("data_compra", mesAtual)
+      .lte("data_compra", fimMesISO),
+    supabase.from("compras").select("valor").eq("status", "Pago"),
     supabase.from("parametros_divisao").select("*").eq("id", 1).single(),
+    supabase.from("divisao_status_mensal").select("*").eq("mes_referencia", mesAtual).maybeSingle(),
     supabase
       .from("vendas")
       .select(
@@ -61,30 +56,31 @@ export default async function PainelPage() {
     "id" | "valor_total" | "sinal" | "restante" | "status_pagamento" | "data_entrega" | "created_at"
   >[];
 
-  const vendasMes = todasVendas
-    .filter((v) => v.created_at >= inicioMes.toISOString() && v.created_at < inicioProximoMes.toISOString())
-    .reduce((acc, v) => acc + v.valor_total, 0);
-  const comprasMes = ((comprasRes.data ?? []) as Pick<Compra, "valor">[]).reduce(
-    (acc, c) => acc + c.valor,
-    0,
-  );
+  const vendasMes = somaVendasDoMes(todasVendas, mesAtual).total;
+  const comprasMes = somaComprasDoMes(
+    (comprasRes.data ?? []) as Pick<Compra, "valor" | "data_compra">[],
+    mesAtual,
+  ).total;
   const parametros = parametrosRes.data as ParametrosDivisao | null;
-  const percentualSocia = parametros?.percentual_socia ?? 50;
+  const percentualSocia = percentualDoMes(
+    statusMesRes.data as DivisaoStatusMensal | null,
+    parametros?.percentual_socia ?? 50,
+  );
 
   const lucroMes = vendasMes - comprasMes;
-  const parteSocia = Math.round(lucroMes * (percentualSocia / 100) * 100) / 100;
-  const parteDono = Math.round((lucroMes - parteSocia) * 100) / 100;
+  const { parteSocia, parteDono } = dividirLucro(lucroMes, percentualSocia);
 
   // Saldo atual = mesma lógica de "Caixa agora" da tela de Compras: o que já
   // está de fato disponível hoje (valor cheio das vendas Pagas + sinal das
-  // Pendentes), descontado do que já saiu via Pix.
-  const totalPix = ((comprasPixRes.data ?? []) as Pick<Compra, "valor">[]).reduce(
+  // Pendentes), descontado do que já saiu do caixa: Pix na hora e cartão
+  // depois que a fatura é paga (pagar_fatura muda o status pra "Pago").
+  const totalComprasPagas = ((comprasPagasRes.data ?? []) as Pick<Compra, "valor">[]).reduce(
     (acc, c) => acc + c.valor,
     0,
   );
   const saldoAtual =
     todasVendas.reduce((acc, v) => acc + (v.status_pagamento === "Pago" ? v.valor_total : v.sinal), 0) -
-    totalPix;
+    totalComprasPagas;
 
   // Saldo previsto até o fim do mês = saldo atual + o "restante" das vendas
   // com entrega agendada até o último dia deste mês e que ainda não estão pagas.
@@ -101,7 +97,7 @@ export default async function PainelPage() {
 
   const proximasEntregas = (entregasRes.data ?? []) as unknown as VendaComItens[];
 
-  const mesLabel = `${MESES[hoje.getMonth()]} ${hoje.getFullYear()}`;
+  const mesLabel = nomeMes(mesAtual);
 
   return (
     <PainelModule

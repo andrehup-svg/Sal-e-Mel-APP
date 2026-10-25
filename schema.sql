@@ -391,3 +391,15 @@ values ('Morango Cravejado', (select id from categorias_preco where nome = 'Mora
 -- existia antes desta mudança (é seguro repetir).
 -- ============================================================
 alter table venda_itens add column if not exists valor_manual boolean not null default false;
+
+-- ============================================================
+-- Migração: percentual da sócia congelado por mês
+-- Mudar o percentual em parametros_divisao vale "daqui pra frente":
+-- antes de trocar, o app grava o percentual antigo em cada mês
+-- passado (e em todo mês marcado como retirado/repassado), pra que
+-- o histórico não seja recalculado. Linha com percentual_socia null
+-- = mês ainda usa o percentual vigente. Rode este bloco no SQL
+-- Editor do Supabase se o banco já existia antes desta mudança (é
+-- seguro repetir).
+-- ============================================================
+alter table divisao_status_mensal add column if not exists percentual_socia numeric(5,2);

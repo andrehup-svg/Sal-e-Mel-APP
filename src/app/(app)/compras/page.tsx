@@ -96,7 +96,7 @@ export default async function ComprasPage() {
 
   const caixaAgora =
     vendas.reduce((acc, v) => acc + (v.status_pagamento === "Pago" ? v.valor_total : v.sinal), 0) -
-    comprasData.filter((c) => c.forma_pagamento === "pix").reduce((acc, c) => acc + c.valor, 0);
+    comprasData.filter((c) => c.status === "Pago").reduce((acc, c) => acc + c.valor, 0);
 
   const compras: CompraRow[] = comprasDoMes.map((c) => toCompraRow(c, cartoes.length));
 

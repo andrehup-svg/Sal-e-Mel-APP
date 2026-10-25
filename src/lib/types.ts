@@ -77,3 +77,16 @@ export type ParametrosDivisao = {
   id: number;
   percentual_socia: number;
 };
+
+export type StatusDono = "Ainda no caixa do negócio" | "Retirado";
+export type StatusSocia = "Pendente de repasse" | "Repassado";
+
+export type DivisaoStatusMensal = {
+  id: string;
+  mes_referencia: string;
+  status_dono: StatusDono;
+  data_retirada: string | null;
+  status_socia: StatusSocia;
+  data_repasse: string | null;
+  percentual_socia: number | null;
+};

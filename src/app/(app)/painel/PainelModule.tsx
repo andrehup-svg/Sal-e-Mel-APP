@@ -50,15 +50,21 @@ export default function PainelModule({
         <h1 className="font-display text-[32px] text-tinta">Painel</h1>
       </div>
 
-      <div className="mb-6 rounded-card border border-mel-500/40 bg-mel-100 p-5">
-        <div className="font-ui text-xs font-bold uppercase tracking-wide text-cacau-600">
-          Lucro do mês
+      <Link
+        href="/divisao"
+        className="mb-6 flex items-center justify-between gap-4 rounded-card border border-mel-500/40 bg-mel-100 p-5 no-underline hover:border-mel-500"
+      >
+        <div>
+          <div className="font-ui text-xs font-bold uppercase tracking-wide text-cacau-600">
+            Lucro do mês
+          </div>
+          <div className="font-display text-3xl text-tinta">{formatBRL(lucroMes)}</div>
+          <div className="font-ui text-sm text-texto-medio">
+            Sua parte {formatBRL(parteDono)} · Sócia {formatBRL(parteSocia)}
+          </div>
         </div>
-        <div className="font-display text-3xl text-tinta">{formatBRL(lucroMes)}</div>
-        <div className="font-ui text-sm text-texto-medio">
-          Sua parte {formatBRL(parteDono)} · Sócia {formatBRL(parteSocia)}
-        </div>
-      </div>
+        <span className="shrink-0 font-ui text-xs font-bold text-mel-700 underline">Ver divisão ›</span>
+      </Link>
 
       <div className="mb-6 grid grid-cols-2 gap-4">
         <Card>

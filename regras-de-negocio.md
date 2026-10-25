@@ -68,7 +68,7 @@ se categoria.tipo == "unidade":
 - **Gasto total no mês** = soma de todas as compras (pix + cartão), independente do status de pagamento — é o valor usado no cálculo de lucro (ver seção Divisão).
 
 ### Saldo previsto (para saber se dá pra cobrir a fatura)
-- **Caixa agora** = soma de (para cada venda: valor total se `Pago`, senão só o sinal) − soma das compras pagas em Pix.
+- **Caixa agora** = soma de (para cada venda: valor total se `Pago`, senão só o sinal) − soma das compras já pagas (Pix, pago na hora, + compras no cartão cuja fatura já foi quitada).
 - **A receber até o vencimento** = soma do "restante" de vendas com entrega agendada entre hoje e a data de vencimento da fatura (inclusive), que ainda não estão com status `Pago`.
 - **Saldo previsto** = Caixa agora + A receber até o vencimento.
 - O app compara Saldo previsto com o total da fatura em aberto e indica se **"dá pra cobrir"** ou **quanto falta**.
