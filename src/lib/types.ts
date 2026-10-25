@@ -90,3 +90,12 @@ export type DivisaoStatusMensal = {
   data_repasse: string | null;
   percentual_socia: number | null;
 };
+
+export type ItemEstoque = {
+  id: string;
+  nome: string;
+  quantidade: number;
+  unidade: string;
+  minimo: number;
+  updated_at: string;
+};

@@ -137,6 +137,7 @@ export default function PainelModule({
         <ShortcutCard href="/agenda" label="Ver agenda de entregas" letra="A" />
         <ShortcutCard href="/produtos" label="Gerenciar produtos" letra="P" />
         <ShortcutCard href="/clientes" label="Gerenciar clientes" letra="C" />
+        <ShortcutCard href="/estoque" label="Controle de estoque" letra="E" />
       </div>
     </div>
   );

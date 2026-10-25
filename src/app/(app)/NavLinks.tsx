@@ -12,6 +12,7 @@ const LINKS = [
   { href: "/divisao", label: "Divisão" },
   { href: "/produtos", label: "Produtos" },
   { href: "/clientes", label: "Clientes" },
+  { href: "/estoque", label: "Estoque" },
 ];
 
 export default function NavLinks({ sair }: { sair: () => Promise<void> }) {
